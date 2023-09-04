@@ -54,6 +54,7 @@ _TEXTURE_DATA = {
     "text_background_2": {"file_path": "res/menu/text_background_2.png", "size": (156, 46)},
     "text_background_3": {"file_path": "res/menu/text_background_3.png", "size": (670, 60)},
     "menu_background": {"file_path": "res/menu/menu_background.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
+    "mouse_crosshair": {"file_path": "res/menu/mouse_crosshair.png", "size": (TILE_SIZE, TILE_SIZE)},
 }
 
 TEXTURES: dict = {}

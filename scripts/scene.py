@@ -35,7 +35,7 @@ class Scene(object):
         self.grid = Grid()
         # dibuja fondo verde en pantalla
         self.grid_background: Surface = Surface(
-            (TILE_SIZE * ASPECT_RATIO, TILE_SIZE * ASPECT_RATIO))
+            (TILE_SIZE * 8, TILE_SIZE * 8))
         self.grid_background.fill("darkgreen")
 
         self.round = 0
@@ -116,6 +116,16 @@ class Scene(object):
                     #         TEXTURES["corrupted_file"], tile_position)
 
             # region --- GUI ---
+
+            grid_end_area = (GRID_SIZE * TILE_SIZE + TILE_SIZE, GRID_SIZE * TILE_SIZE + TILE_SIZE)
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_above_grid_end = mouse_pos[0] < grid_end_area[0] and mouse_pos[1] < grid_end_area[1]
+            mouse_below_grid_start = mouse_pos[0] > TILE_SIZE and mouse_pos[1] > TILE_SIZE
+            if mouse_above_grid_end and mouse_below_grid_start:
+                pygame.mouse.set_visible(False)
+                screen.blit(TEXTURES["mouse_crosshair"], (mouse_pos[0] - TILE_SIZE // 2, mouse_pos[1] - TILE_SIZE // 2))
+            else:
+                pygame.mouse.set_visible(True)
 
             x = 672
 
