@@ -190,6 +190,7 @@ class Scene(object):
             self.draw_intro()
 
         if self.round > grid.round_count:
+            # TODO add wins.txt functionality here
             self.draw_win()
 
         if self.show_rules:

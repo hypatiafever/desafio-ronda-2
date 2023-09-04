@@ -6,6 +6,7 @@ from texturedata import TEXTURES
 
 
 class Menu(object):
+    # TODO add option for entering name, possibly another menu entirely
 
     def __init__(self):
 
