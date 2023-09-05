@@ -17,12 +17,12 @@ _TEXTURE_DATA = {
     "win": {"file_path": "res/scenery/win.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
 
     # virus
-    "wandering_virus": {"file_path": "res/virus/virus3.png", "size": (TILE_SIZE, TILE_SIZE)},
+    "wandering_virus_lin": {"file_path": "res/virus/virus3.png", "size": (TILE_SIZE, TILE_SIZE)},
     "virus1": {"file_path": "res/virus/virus1.png", "size": (TILE_SIZE, TILE_SIZE)},
     "virus2": {"file_path": "res/virus/virus2.png", "size": (TILE_SIZE, TILE_SIZE)},
     "virus3": {"file_path": "res/virus/virus4.png", "size": (TILE_SIZE, TILE_SIZE)},
     "virus4": {"file_path": "res/virus/virus5.png", "size": (TILE_SIZE, TILE_SIZE)},
-    "virus5": {"file_path": "res/virus/virus6.png", "size": (TILE_SIZE, TILE_SIZE)},
+    "wandering_virus_sin": {"file_path": "res/virus/virus6.png", "size": (TILE_SIZE, TILE_SIZE)},
     "virus1_dead": {"file_path": "res/virus_dead/virus1_dead.png", "size": (TILE_SIZE, TILE_SIZE)},
     "virus2_dead": {"file_path": "res/virus_dead/virus2_dead.png", "size": (TILE_SIZE, TILE_SIZE)},
     "virus3_dead": {"file_path": "res/virus_dead/virus4_dead.png", "size": (TILE_SIZE, TILE_SIZE)},

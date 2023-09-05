@@ -26,6 +26,7 @@ class Scene(object):
         self.pause = pause
         self.audio_player: AudioHandler = AudioHandler()
         self.used_steps = 0
+        self.virus_moved_amount = 0
         self.robots = [
             "UAIBOT",
             "UAIBOTA",
@@ -47,14 +48,14 @@ class Scene(object):
         self.dead = False
         self.intro_frame_num = 2
         # define la textura de los virus al azar
-        self.virus_index = rng.randint(1, 5)
+        self.virus_index = rng.randint(1, 4)
         self.show_rules = False
 
     def update(self, in_rounds: bool, paused: bool):
         """Actualiza el comportamiento de la escena."""
         self.draw(in_rounds, paused)
         self.check_finished()
-        self.dead_state()
+        self.check_kill_player()
 
     # region --- Draws ---
 
@@ -80,21 +81,6 @@ class Scene(object):
                     if content_dict["protected_zone"]:
                         screen.blit(
                             TEXTURES["protected_zone"], tile_position)
-                    # if content_dict["deactivated_protected_zone"]:
-                    #     screen.blit(
-                    #         TEXTURES["deactivated_protected_zone"], tile_position)
-                    # if content_dict["key"]:
-                    #     screen.blit(
-                    #         TEXTURES["key"], tile_position)
-                    # if grid.portal_blue == [x, y]:
-                    #     screen.blit(
-                    #         TEXTURES["portal_blue"], tile_position)
-                    # if grid.portal_orange == [x, y]:
-                    #     screen.blit(
-                    #         TEXTURES["portal_orange"], tile_position)
-                    # if content_dict["battery"]:
-                    #     screen.blit(
-                    #         TEXTURES["battery"], tile_position)
                     if grid.cells[x][y].value == "player":
                         screen.blit(
                             TEXTURES[self.robots[0]], tile_position)
@@ -108,22 +94,24 @@ class Scene(object):
                     if grid.cells[x][y].value == "dead_virus":
                         screen.blit(
                             TEXTURES[f"virus{self.virus_index}_dead"], tile_position)
-                    if content_dict["wandering_virus"]:
+                    if content_dict["wandering_virus_lin"]:
                         screen.blit(
-                            TEXTURES["wandering_virus"], tile_position)
-                    # if content_dict["corrupted_file"]:
-                    #     screen.blit(
-                    #         TEXTURES["corrupted_file"], tile_position)
+                            TEXTURES["wandering_virus_lin"], tile_position)
+                    if content_dict["wandering_virus_sin"]:
+                        screen.blit(
+                            TEXTURES["wandering_virus_sin"], tile_position)
 
             # region --- GUI ---
 
-            grid_end_area = (GRID_SIZE * TILE_SIZE + TILE_SIZE, GRID_SIZE * TILE_SIZE + TILE_SIZE)
+            grid_end_area = (GRID_SIZE * TILE_SIZE + TILE_SIZE,
+                             GRID_SIZE * TILE_SIZE + TILE_SIZE)
             mouse_pos = pygame.mouse.get_pos()
             mouse_above_grid_end = mouse_pos[0] < grid_end_area[0] and mouse_pos[1] < grid_end_area[1]
             mouse_below_grid_start = mouse_pos[0] > TILE_SIZE and mouse_pos[1] > TILE_SIZE
             if mouse_above_grid_end and mouse_below_grid_start:
                 pygame.mouse.set_visible(False)
-                screen.blit(TEXTURES["mouse_crosshair"], (mouse_pos[0] - TILE_SIZE // 2, mouse_pos[1] - TILE_SIZE // 2))
+                screen.blit(TEXTURES["mouse_crosshair"], (mouse_pos[0] -
+                            TILE_SIZE // 2, mouse_pos[1] - TILE_SIZE // 2))
             else:
                 pygame.mouse.set_visible(True)
 
@@ -150,25 +138,6 @@ class Scene(object):
             self.screen.blit(
                 remaining_steps_text, (677, 384, TEXT_BLOCK_WIDTH, TEXT_BLOCK_HEIGHT))
 
-            # if self.round == 2:
-            #     self.screen.blit(
-            #         TEXTURES["safe_zones_rules"], (x, 450, 600, 80))
-            # if self.round == 3:
-            #     self.screen.blit(
-            #         TEXTURES["portal_rules"], (x, 450, 600, 90))
-            # if self.round == 4:
-            #     self.screen.blit(
-            #         TEXTURES["battery_rules"], (x, 450, 600, 90))
-            # if self.round == 5:
-            #     self.screen.blit(
-            #         TEXTURES["wandering_virus_rules"], (x, 450, 600, 90))
-            # if self.round == 6:
-            #     self.screen.blit(
-            #         TEXTURES["key_rules"], (x, 450, 600, 90))
-            # if self.round == 7:
-            #     self.screen.blit(
-            #         TEXTURES["corrupted_folder_rules"], (x, 450, 600, 90))
-
             # endregion
 
         # Dibuja el menu y reproduce la musica correspondiente
@@ -180,6 +149,7 @@ class Scene(object):
 
         # Dibuja la pausa y controla el volumen de la musica
         if paused:
+            pygame.mouse.set_visible(True)
             if not self.show_rules:
                 self.pause.draw(self.screen)
                 self.audio_player.lower_music_vol()
@@ -211,6 +181,7 @@ class Scene(object):
                 TEXTURES["press_any_white"], (SCREEN_WIDTH - 450, SCREEN_HEIGHT - 45, 450, 50))
 
     def draw_win(self):
+        pygame.mouse.set_visible(True)
         """Renderiza en pantalla el mensaje de haber ganado."""
         self.screen.blit(
             TEXTURES["win"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -222,7 +193,7 @@ class Scene(object):
     def check_finished(self) -> bool:
         """True si todos los virus fueron atrapados y pasa a la siguiente ronda"""
         protected_zones_count = len(self.grid.protected_zones)
-            # len(self.grid.deactivated_protected_zones)
+        # len(self.grid.deactivated_protected_zones)
 
         if self.intro_finished:
 
@@ -243,94 +214,51 @@ class Scene(object):
                 self.round += 1
 
                 if self.round < self.grid.round_count:
-                    self.virus_index = rng.randint(1, 5)
+                    self.virus_index = rng.randint(1, 4)
                     self.grid.load_round(self.difficulty, self.round)
                     self.used_steps = 0
                 return True
 
         return False
 
-    # def check_kill_player(self):
-    #     """Determina si el jugador es atacado por el virus y activa la condición de muerto del jugador."""
-    #     for virus in self.grid.wanderer_virus:
-    #         if virus[0] != None:
-    #             if self.grid.cells[virus[0]][virus[1]].value == "player":
-    #                 self.audio_player.interrupt_music(
-    #                     "res/sounds/main-theme.mp3", "res/sounds/lost.wav")
-    #                 self.dead = True
-
-    # def check_batteries(self):
-    #     """Determina si las baterías son obtenidas por el jugador."""
-    #     if self.intro_finished:
-    #         for pos in self.grid.batteries:
-    #             x = pos[0]
-    #             y = pos[1]
-    #             if self.grid.cells[x][y] == self.player_cell:
-    #                 # una vez obtenidas las baterías son eliminadas
-    #                 self.audio_player.play_sound("res/sounds/battery.wav")
-    #                 self.grid.batteries.remove(pos)
-    #                 self.grid.round_steps += 10
-
-    # def check_corrupted_file(self):
-    #     """Determina si las carpetas corruptas son tocadas por el jugador."""
-    #     if self.intro_finished:
-    #         for pos in self.grid.corrupted_files:
-    #             x = pos[0]
-    #             y = pos[1]
-    #             if self.grid.cells[x][y] == self.player_cell:
-    #                 # una vez obtenidas las carpetas corruptas son eliminadas
-    #                 self.audio_player.play_sound(
-    #                     "res/sounds/corrupted-file.wav")
-
-    #                 self.grid.corrupted_files.remove(pos)
-    #                 self.update_steps(5)
-
-    # def check_keys(self):
-    #     """Determina si se han conseguido todas las keys (pendrive), eliminándolas a medida que se consiguen."""
-    #     got_all_keys = False
-
-    #     if self.intro_finished:
-    #         for pos in self.grid.keys:
-    #             x = pos[0]
-    #             y = pos[1]
-    #             if self.grid.cells[x][y].value == "player":
-    #                 self.grid.keys.remove(pos)
-    #                 if len(self.grid.keys) == 0:
-    #                     got_all_keys = True
-
-    #     if got_all_keys:
-    #         self.grid.protected_zones = self.grid.deactivated_protected_zones
-    #         self.grid.deactivated_protected_zones = []
+    def check_kill_player(self):
+        """Determina si el jugador es atacado por el virus y activa la condición de muerto del jugador."""
+        all_moving_virus = []
+        all_moving_virus.extend(self.grid.wandering_virus_lin)
+        all_moving_virus.extend(self.grid.wandering_virus_sin)
+        for virus in all_moving_virus:
+            if virus[0] != None:
+                if self.grid.cells[virus[0]][virus[1]].value == "player":
+                    self.audio_player.interrupt_music(
+                        "res/sounds/main-theme.mp3", "res/sounds/lost.wav")
+                    self.dead = True
+                    self.dead_state()
 
     # endregion
 
-    def move_wandering_virus(self):
+    def move_virus(self):
+        self.virus_moved_amount += 1
+        self._move_wandering_virus_lin()
+        self._move_wandering_virus_sin()
+
+    def _move_wandering_virus_lin(self):
         """Controla el movimiento del virus que ataca al jugador."""
-        for virus in self.grid.wanderer_virus:
+        for virus in self.grid.wandering_virus_lin:
             if virus[0] != None:
                 if virus[0] != 0:
                     virus[0] -= 1
                 else:
                     virus[0] = 7
 
-    # def teleport_blue_orange(self):
-    #     """Mueve el player desde el portal azul hasta el naranja."""
-    #     if self.grid.portal_blue[0] != None:
-    #         if self.grid.cells[self.grid.portal_blue[0]][self.grid.portal_blue[1]].value == "player":
-    #             self.audio_player.play_sound(
-    #                 "res/sounds/enter-portal.wav")
-    #             self.grid.move_element(
-    #                 self.player_cell, self.grid.portal_orange)
-
-    # def teleport_orange_blue(self):
-    #     """Mueve el player desde el portal naranja hasta el azul."""
-    #     if self.grid.portal_orange[0] != None:
-    #         if self.grid.cells[self.grid.portal_orange[0]][self.grid.portal_orange[1]].value == "player":
-
-    #             self.audio_player.play_sound(
-    #                 "res/sounds/enter-portal.wav")
-    #             self.grid.move_element(
-    #                 self.player_cell, self.grid.portal_blue)
+    def _move_wandering_virus_sin(self):
+        y_delta = 1 if self.virus_moved_amount % 2 else -1
+        for virus in self.grid.wandering_virus_sin:
+            if virus[0] != None:
+                if virus[0] != 0:
+                    virus[0] -= 1
+                else:
+                    virus[0] = 7
+                virus[1] += y_delta
 
     # region --- Event Handling ---
 
@@ -417,22 +345,17 @@ class Scene(object):
                 # actualiza la posición del player con el movimiento realizado
                 self.player_cell = next_cell
 
-                self.move_wandering_virus()
-                # self.check_keys()
-                # self.teleport_blue_orange()
-                # self.teleport_orange_blue()
-                # self.check_batteries()
-                # self.check_corrupted_file()
+                self.move_virus()
                 passed_round = self.check_finished()
-                # self.check_kill_player()
                 if not passed_round:  # esto hace que el contador de turnos no llegue a cero si se gana con el último movimiento
                     self.update_steps(1)
 
     def restart(self):
         """Devuelve todo al estado inicial de la ronda."""
         if self.round > 0:
+            stay_still_virus = self.grid.wandering_virus_sin
             self.grid.load_round(self.difficulty, self.round)
-
+            self.grid.wandering_virus_sin = stay_still_virus
             self.used_steps = 0
             self.robots = [
                 "UAIBOT",
@@ -452,7 +375,6 @@ class Scene(object):
     def update_steps(self, steps_delta: int):
         """Maneja el sistema de turnos, haciendo el avance y el reseteo en caso de que se terminen los movimientos habilitados."""
         self.used_steps += steps_delta
-
         if self.used_steps >= self.grid.round_steps:
             self.restart()
             self.audio_player.interrupt_music(

@@ -47,13 +47,8 @@ class Grid():
                 self.cells[x][y].value = None
 
         self.protected_zones = []
-        # self.portal_blue = [None, None]
-        # self.portal_orange = [None, None]
-        # self.deactivated_protected_zones = []
-        # self.batteries = []
-        # self.keys = []
-        self.wanderer_virus = []
-        # self.corrupted_files = []
+        self.wandering_virus_lin = []
+        self.wandering_virus_sin = []
 
     def load_round(self, difficulty: int, round: int):
         """Setea contenido del grid desde un documento .xlsx"""
@@ -81,36 +76,23 @@ class Grid():
                     cell_content = "virus"
                 if cell.fill.start_color.index == "FFFFFF00":
                     self.protected_zones.append([cell_x, cell_y])
-                # if cell.fill.start_color.index == "FF00FFFF":
-                #     self.portal_blue = [cell_x, cell_y]
-                # if cell.fill.start_color.index == "FFFF9900":
-                #     self.portal_orange = [cell_x, cell_y]
-                # if cell.fill.start_color.index == "FF0000FF":
-                #     self.batteries.append([cell_x, cell_y])
                 if cell.fill.start_color.index == "FF9900FF":
-                    self.wanderer_virus.append([cell_x, cell_y])
+                    self.wandering_virus_lin.append([cell_x, cell_y])
                     cell_content = "wall"
                 if cell.fill.start_color.index == "FFFF00FF":
-                    self.wanderer_virus.append([cell_x, cell_y])
-                # if cell.fill.start_color.index == "FF4A86E8":
-                #     self.keys.append([cell_x, cell_y])
-                # if cell.fill.start_color.index == "FF434343":
-                #     self.deactivated_protected_zones.append([cell_x, cell_y])
-                # if cell.fill.start_color.index == "FFFFD966":
-                    # self.corrupted_files.append([cell_x, cell_y])
+                    self.wandering_virus_lin.append([cell_x, cell_y])
+                if cell.fill.start_color.index == "FFA64D79":
+                    self.wandering_virus_sin.append([cell_x, cell_y])
 
                 self.cells[cell_x][cell_y].value = cell_content
 
     def detect(self, x: int, y: int) -> dict:
         """Devuelve qué objetos existen el punto dado."""
         point = [x, y]
-        exists_in_point = {"wandering_virus": self.wanderer_virus.__contains__(point),
-                        #    "corrupted_file": self.corrupted_files.__contains__(point),
+        exists_in_point = {"wandering_virus_lin": self.wandering_virus_lin.__contains__(point),
+                           "wandering_virus_sin": self.wandering_virus_sin.__contains__(point),
                            "protected_zone": self.protected_zones.__contains__(point),
-                        #    "deactivated_protected_zone": self.deactivated_protected_zones.__contains__(point),
-                        #    "battery": self.batteries.__contains__(point),
-                        #    "key": self.keys.__contains__(point)}
-        }
+                           }
         return exists_in_point
 
     def move_element(self, cell_from: Cell, x_y_to: tuple):

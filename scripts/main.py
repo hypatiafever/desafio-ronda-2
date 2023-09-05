@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 1.1.1
+Versión 1.2.0
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -35,6 +35,8 @@ class Game():
         self.running = True
         self.in_rounds = False
 
+        self.mouse_moved_amount = 0
+
     def run(self):
         """Inicia el mainloop del juego."""
 
@@ -63,21 +65,25 @@ class Game():
                     else:
                         self.paused = False
                     continue
-            if event.type == pygame.KEYDOWN and not self.paused and self.in_rounds:  # maneja el input de las rondas
-                if event.key == pygame.K_ESCAPE and not self.in_rounds:
-                    self.running = False
-                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                    self.scene.move("right")
-                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                    self.scene.move("left")
-                if event.key == pygame.K_UP or event.key == pygame.K_w:
-                    self.scene.move("up")
-                if event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                    self.scene.move("down")
-                if event.key == pygame.K_r:
-                    self.scene.restart()
-                if event.key == pygame.K_e:
-                    self.scene.change_robot()
+            if not self.paused and self.in_rounds:  # maneja el input de las rondas
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        self.scene.move("right")
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                        self.scene.move("left")
+                    if event.key == pygame.K_UP or event.key == pygame.K_w:
+                        self.scene.move("up")
+                    if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                        self.scene.move("down")
+                    if event.key == pygame.K_r:
+                        self.scene.restart()
+                    if event.key == pygame.K_e:
+                        self.scene.change_robot()
+                if event.type == pygame.MOUSEMOTION and not self.scene.dead:
+                    self.mouse_moved_amount += 1
+                    if self.mouse_moved_amount >= 15:
+                        self.scene.move_virus()
+                        self.mouse_moved_amount = 0
 
             if event.type == pygame.KEYDOWN and not self.in_rounds:  # maneja el input fuera de las rondas
                 if event.key == pygame.K_ESCAPE:
