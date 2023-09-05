@@ -9,14 +9,14 @@ import math as m
 from audio import AudioHandler
 from constants import *
 from grid import Grid
-from gui import Menu, Pause
+from gui import MovementsMenu, Pause
 from pygame import Surface
 from texturedata import TEXTURES
 
 
 class Scene(object):
 
-    def __init__(self, screen: Surface, menu: Menu, pause: Pause):
+    def __init__(self, screen: Surface, menu: MovementsMenu, pause: Pause):
 
         # define los tamaños de las fuentes para la gui
         pygame.font.init()
@@ -24,7 +24,7 @@ class Scene(object):
         self.large_font = pygame.font.Font("res/font/PixelOperator.ttf", 48)
 
         self.screen = screen
-        self.menu = menu
+        self.mov_amount_ui = menu
         self.pause = pause
         self.audio_player: AudioHandler = AudioHandler()
         self.used_steps = 0
@@ -41,7 +41,7 @@ class Scene(object):
             (TILE_SIZE * 8, TILE_SIZE * 8))
         self.grid_background.fill("darkgreen")
 
-        self.round = 0
+        self.round = -1
         self.intro_finished = False
         self.difficulty_set = False
         self.difficulty = 0
@@ -158,17 +158,18 @@ class Scene(object):
                 f"Movimientos restantes: {self.grid.round_steps - self.used_steps}", False, WHITE)
             self.screen.blit(
                 remaining_steps_text, (677, 384, TEXT_BLOCK_WIDTH, TEXT_BLOCK_HEIGHT))
-            
+
             timer_text = self.small_font.render(
                 f"Tiempo restante: {m.trunc(self.timer)}", False, WHITE
             )
-            self.screen.blit(timer_text, (0, 0, TEXT_BLOCK_WIDTH, TEXT_BLOCK_HEIGHT))
+            self.screen.blit(
+                timer_text, (0, 0, TEXT_BLOCK_WIDTH, TEXT_BLOCK_HEIGHT))
 
             # endregion
 
         # Dibuja el menu y reproduce la musica correspondiente
-        if not self.difficulty_set:
-            self.menu.draw(self.screen)
+        if self.round == -1:
+            self.mov_amount_ui.draw(self.screen)
             self.audio_player.play_music("res/sounds/menu-theme.mp3")
         else:
             self.audio_player.play_music("res/sounds/main-theme.mp3")

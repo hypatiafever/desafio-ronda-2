@@ -15,6 +15,7 @@ _TEXTURE_DATA = {
     "wall": {"file_path": "res/scenery/pared.png", "size": (TILE_SIZE, TILE_SIZE)},
     "protected_zone": {"file_path": "res/scenery/areaprotegida.png", "size": (TILE_SIZE, TILE_SIZE)},
     "win": {"file_path": "res/scenery/win.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
+    "mouse_crosshair": {"file_path": "res/menu/mouse_crosshair.png", "size": (TILE_SIZE, TILE_SIZE)},
 
     # virus
     "wandering_virus_lin": {"file_path": "res/virus/virus3.png", "size": (TILE_SIZE, TILE_SIZE)},
@@ -53,8 +54,10 @@ _TEXTURE_DATA = {
     "text_background_1": {"file_path": "res/menu/text_background_1.png", "size": (400, 46)},
     "text_background_2": {"file_path": "res/menu/text_background_2.png", "size": (156, 46)},
     "text_background_3": {"file_path": "res/menu/text_background_3.png", "size": (670, 60)},
-    "menu_background": {"file_path": "res/menu/menu_background.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
-    "mouse_crosshair": {"file_path": "res/menu/mouse_crosshair.png", "size": (TILE_SIZE, TILE_SIZE)},
+    "start_menu_background": {"file_path": "res/menu/start_menu_bg.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
+    "insert_name": {"file_path": "res/menu/insert_name.png", "size": (121, 11)},
+    "mov_choose": {"file_path": "res/menu/movement_choose.png", "size": (206, 14)},
+
 }
 
 TEXTURES: dict = {}

@@ -4,13 +4,13 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 1.3.1
+Versión 1.4.0
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
 import pygame
 from constants import *
-from gui import Menu, Pause
+from gui import MovementsMenu, Pause
 from pygame import Surface
 from scene import Scene
 from texturedata import load_textures
@@ -27,9 +27,9 @@ class Game():
         self.clock = pygame.time.Clock()  # creamos un reloj para los fps
         load_textures()
 
-        self.menu: Menu = Menu()
+        self.mov_amount_ui: MovementsMenu = MovementsMenu()
         self.pause: Pause = Pause()
-        self.scene: Scene = Scene(self.screen, self.menu, self.pause)
+        self.scene: Scene = Scene(self.screen, self.mov_amount_ui, self.pause)
 
         self.paused = False
         self.running = True
@@ -113,11 +113,12 @@ class Game():
                     else:
                         self.scene.intro_finished = True
 
-                if not self.scene.difficulty_set:  # toma la interacción con los botones de dificultad
-                    result = self.menu.define_button_pressed()
+                if self.scene.round == -1:  # toma la interacción con los botones de dificultad
+                    result = self.mov_amount_ui.define_button_pressed()
                     if result:
                         self.scene.difficulty = result - 1
                         self.scene.difficulty_set = True
+                        self.scene.round += 1
                         self.scene.audio_player.stop_music()
 
         # endregion

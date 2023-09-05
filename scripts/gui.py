@@ -1,25 +1,30 @@
 """Contiene las clases del menu y la pausa"""
 
 import pygame
+import math as m
 from constants import *
 from texturedata import TEXTURES
 
+class StartMenu(object):
+    def __init__(self):
+        pass
+    def draw(self, screen: pygame.Surface):
+        screen.blit(TEXTURES["start_menu_background"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+        screen.blit(TEXTURES["press_any_white"], (SCREEN_WIDTH // 2 - 450 // 2, 600 + m.sin(pygame.time.get_ticks()) * 10))
 
-class Menu(object):
-    # TODO add option for entering name, possibly another menu entirely
-
+class MovementsMenu(object):
     def __init__(self):
 
         self.easy_button_rect: pygame.Rect = pygame.Rect(
-            100, SCREEN_HEIGHT//2 + 100, TILE_SIZE*4, TILE_SIZE*4)
+            100, SCREEN_HEIGHT//2 + 50, TILE_SIZE*4, TILE_SIZE*4)
         self.normal_button_rect: pygame.Rect = pygame.Rect(
-            500, SCREEN_HEIGHT//2 + 100, TILE_SIZE*4, TILE_SIZE*4)
+            500, SCREEN_HEIGHT//2 + 50, TILE_SIZE*4, TILE_SIZE*4)
         self.hard_button_rect: pygame.Rect = pygame.Rect(
-            900, SCREEN_HEIGHT//2 + 100, TILE_SIZE*4, TILE_SIZE*4)
+            900, SCREEN_HEIGHT//2 + 50, TILE_SIZE*4, TILE_SIZE*4)
 
     def draw(self, screen: pygame.Surface):
         """Renderiza los elementos."""
-        screen.blit(TEXTURES["menu_background"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+        screen.blit(TEXTURES["mov_choose"], (SCREEN_WIDTH // 2 - , SCREEN_HEIGHT // 2 - 50))
         screen.blit(TEXTURES["easy_button"], self.easy_button_rect)
         screen.blit(TEXTURES["normal_button"], self.normal_button_rect)
         screen.blit(TEXTURES["hard_button"], self.hard_button_rect)
