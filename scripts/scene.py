@@ -4,6 +4,8 @@ Se encarga de los eventos, renderizado y lógica general del juego."""
 
 import random as rng
 import pygame
+import time as t
+import math as m
 from audio import AudioHandler
 from constants import *
 from grid import Grid
@@ -51,11 +53,31 @@ class Scene(object):
         self.virus_index = rng.randint(1, 4)
         self.show_rules = False
 
+        self.start_time = 0
+        self.current_time = 0
+        self.time_limit = 55
+        self.timer = self.time_limit
+
     def update(self, in_rounds: bool, paused: bool):
         """Actualiza el comportamiento de la escena."""
         self.draw(in_rounds, paused)
         self.check_finished()
         self.check_kill_player()
+        if in_rounds and not paused:
+            self.run_timer()
+
+    def run_timer(self):
+        if self.start_time == 0:
+            self.start_time = t.time()
+        self.current_time = t.time()
+
+        if not self.dead:
+            elapsed_time = self.current_time - self.start_time
+            self.timer = self.time_limit - elapsed_time
+            print(f"time left: {self.timer}")
+
+        if self.timer <= 0:
+            self.dead_state()
 
     # region --- Draws ---
 
@@ -137,6 +159,11 @@ class Scene(object):
                 f"Movimientos restantes: {self.grid.round_steps - self.used_steps}", False, WHITE)
             self.screen.blit(
                 remaining_steps_text, (677, 384, TEXT_BLOCK_WIDTH, TEXT_BLOCK_HEIGHT))
+            
+            timer_text = self.small_font.render(
+                f"Tiempo restante: {m.trunc(self.timer)}", False, WHITE
+            )
+            self.screen.blit(timer_text, (0, 0, TEXT_BLOCK_WIDTH, TEXT_BLOCK_HEIGHT))
 
             # endregion
 
@@ -231,7 +258,6 @@ class Scene(object):
                 if self.grid.cells[virus[0]][virus[1]].value == "player":
                     self.audio_player.interrupt_music(
                         "res/sounds/main-theme.mp3", "res/sounds/lost.wav")
-                    self.dead = True
                     self.dead_state()
 
     # endregion
@@ -362,6 +388,9 @@ class Scene(object):
                 "UAIBOTA",
                 "UAIBOTINO",
             ]
+            self.start_time = 0
+            self.current_time = 0
+            self.timer = self.time_limit
             self.dead = False
 
     def reset_game(self):
@@ -388,8 +417,8 @@ class Scene(object):
 
     def dead_state(self):
         """Cuando el jugador muere notifica al usuario con un mensaje en pantalla."""
-        if self.dead:
-            self.screen.blit(
-                TEXTURES["text_background_3"], (SCREEN_WIDTH//2 - 300, SCREEN_HEIGHT//2 - 50, 600, 100))
+        self.dead = True
+        self.screen.blit(
+            TEXTURES["text_background_3"], (SCREEN_WIDTH//2 - 300, SCREEN_HEIGHT//2 - 50, 600, 100))
 
     # endregion
