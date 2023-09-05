@@ -74,7 +74,6 @@ class Scene(object):
         if not self.dead:
             elapsed_time = self.current_time - self.start_time
             self.timer = self.time_limit - elapsed_time
-            print(f"time left: {self.timer}")
 
         if self.timer <= 0:
             self.dead_state()
