@@ -9,14 +9,14 @@ import math as m
 from audio import AudioHandler
 from constants import *
 from grid import Grid
-from gui import MovementsMenu, Pause
+from gui import MovementsMenu, Pause, NameMenu, StartMenu
 from pygame import Surface
 from texturedata import TEXTURES
 
 
 class Scene(object):
 
-    def __init__(self, screen: Surface, menu: MovementsMenu, pause: Pause):
+    def __init__(self, screen: Surface, mov_m: MovementsMenu, pause: Pause, name_m: NameMenu, start_m: StartMenu):
 
         # define los tamaños de las fuentes para la gui
         pygame.font.init()
@@ -24,7 +24,9 @@ class Scene(object):
         self.large_font = pygame.font.Font("res/font/PixelOperator.ttf", 48)
 
         self.screen = screen
-        self.mov_amount_ui = menu
+        self.start_menu = start_m
+        self.name_menu = name_m
+        self.mov_amount_ui = mov_m
         self.pause = pause
         self.audio_player: AudioHandler = AudioHandler()
         self.used_steps = 0
@@ -41,14 +43,14 @@ class Scene(object):
             (TILE_SIZE * 8, TILE_SIZE * 8))
         self.grid_background.fill("darkgreen")
 
-        self.round = -1
+        self.round = -3
         self.intro_finished = False
         self.difficulty_set = False
         self.difficulty = 0
 
         self.player_cell = None
         self.dead = False
-        self.intro_frame_num = 2
+        self.intro_frame_num = 1
         # define la textura de los virus al azar
         self.virus_index = rng.randint(1, 4)
         self.show_rules = False
@@ -167,12 +169,15 @@ class Scene(object):
 
             # endregion
 
-        # Dibuja el menu y reproduce la musica correspondiente
+        if self.round == -3:
+            self.start_menu.draw(screen)
+            self.audio_player.play_music("res/sounds/menu-theme.mp3")
+
+        if self.round == -2:
+            self.name_menu.draw()
+        # Dibuja el menu de movimientos y reproduce la musica correspondiente
         if self.round == -1:
             self.mov_amount_ui.draw(self.screen)
-            self.audio_player.play_music("res/sounds/menu-theme.mp3")
-        else:
-            self.audio_player.play_music("res/sounds/main-theme.mp3")
 
         # Dibuja la pausa y controla el volumen de la musica
         if paused:
@@ -206,6 +211,14 @@ class Scene(object):
                 TEXTURES["game_rules"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
             self.screen.blit(
                 TEXTURES["press_any_white"], (SCREEN_WIDTH - 450, SCREEN_HEIGHT - 45, 450, 50))
+    
+    def continue_intro(self):
+        if self.intro_frame_num < 7:  # pasa al siguiente frame o termina la animaciòn
+            self.intro_frame_num += 1
+        else:
+            self.intro_finished = True
+            self.audio_player.stop_music()
+            self.audio_player.play_music("res/sounds/main-theme.mp3")
 
     def draw_win(self):
         pygame.mouse.set_visible(True)
@@ -395,7 +408,8 @@ class Scene(object):
 
     def reset_game(self):
         """Reinicia el juego desde el principio."""
-        self.round = 0
+        self.round = -3
+        self.virus_moved_amount = 0
         self.intro_finished = False
         self.difficulty_set = False
         self.difficulty = 0

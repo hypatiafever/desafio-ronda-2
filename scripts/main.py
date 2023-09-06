@@ -4,13 +4,13 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 1.4.0
+Versión 1.4.1
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
 import pygame
 from constants import *
-from gui import MovementsMenu, Pause
+from gui import MovementsMenu, Pause, NameMenu, StartMenu
 from pygame import Surface
 from scene import Scene
 from texturedata import load_textures
@@ -27,13 +27,17 @@ class Game():
         self.clock = pygame.time.Clock()  # creamos un reloj para los fps
         load_textures()
 
+        self.start_menu: StartMenu = StartMenu()
+        self.name_menu: NameMenu = NameMenu(self.screen)
         self.mov_amount_ui: MovementsMenu = MovementsMenu()
         self.pause: Pause = Pause()
-        self.scene: Scene = Scene(self.screen, self.mov_amount_ui, self.pause)
+        self.scene: Scene = Scene(self.screen, self.mov_amount_ui, self.pause, self.name_menu, self.start_menu)
 
         self.paused = False
         self.running = True
         self.in_rounds = False
+
+        self.username = ""
 
         self.mouse_moved_amount = 0
 
@@ -53,6 +57,11 @@ class Game():
 
         # detecta los inputs del usuario
         for event in pygame.event.get():
+            if self.scene.round == -2:
+                self.username = self.name_menu.handle_writing(event)
+                if self.username:
+                    self.scene.round += 1  
+
             if event.type == pygame.QUIT:
                 self.running = False
             if event.type == pygame.KEYDOWN and self.in_rounds:  # maneja la activación del estado de pausa
@@ -65,6 +74,7 @@ class Game():
                     else:
                         self.paused = False
                     continue
+
             if not self.paused and self.in_rounds:  # maneja el input de las rondas
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
@@ -88,13 +98,12 @@ class Game():
             if event.type == pygame.KEYDOWN and not self.in_rounds:  # maneja el input fuera de las rondas
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
-                if event.key == pygame.K_r:
+                if event.key == pygame.K_r and not self.name_menu.active and not self.scene.round == -3:
                     self.scene.reset_game()
                 if self.scene.round == 0 and self.scene.difficulty_set:  # toma cualquier input de tecla durante la intro
-                    if self.scene.intro_frame_num < 7:  # pasa al siguiente frame o termina la animaciòn
-                        self.scene.intro_frame_num += 1
-                    else:
-                        self.scene.intro_finished = True
+                    self.scene.continue_intro()
+                if self.scene.round == -3:
+                    self.scene.round += 1
 
             if event.type == pygame.MOUSEBUTTONUP:
 
@@ -107,25 +116,26 @@ class Game():
                     if result == 3:
                         self.scene.show_rules = True
 
-                if self.scene.round == 0 and self.scene.difficulty_set:  # toma el paso de la intro
-                    if self.scene.intro_frame_num < 7:  # pasa al siguiente frame o termina la animaciòn
-                        self.scene.intro_frame_num += 1
-                    else:
-                        self.scene.intro_finished = True
-
                 if self.scene.round == -1:  # toma la interacción con los botones de dificultad
                     result = self.mov_amount_ui.define_button_pressed()
                     if result:
                         self.scene.difficulty = result - 1
                         self.scene.difficulty_set = True
                         self.scene.round += 1
-                        self.scene.audio_player.stop_music()
 
+                if self.scene.round == -3:
+                    self.scene.round += 1
+
+                if self.scene.round == 0 and self.scene.difficulty_set:  # toma el paso de la intro
+                    self.scene.continue_intro()
         # endregion
 
         self.scene.update(self.in_rounds, self.paused)
         pygame.display.update()
         self.clock.tick(FPS)
+
+    # def write_to_scoreboard(self):
+    #     with open()
 
     def finish(self):
         """Finaliza el programa."""
