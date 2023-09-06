@@ -37,7 +37,7 @@ class Grid():
                       for x in range(GRID_SIZE)]
         self._set_defaults()
         self.round_steps = 0
-        self.round_count = 2  # tiene que ser +1
+        self.round_count = 1  # tiene que ser +1
         self.steps_per_round = STEPS_PER_ROUND
 
     def _set_defaults(self):

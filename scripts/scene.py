@@ -30,6 +30,8 @@ class Scene(object):
         self.pause = pause
         self.audio_player: AudioHandler = AudioHandler()
         self.used_steps = 0
+        self.steps_used_per_round = []
+
         self.virus_moved_amount = 0
         self.robots = [
             "UAIBOT",
@@ -54,6 +56,7 @@ class Scene(object):
         # define la textura de los virus al azar
         self.virus_index = rng.randint(1, 4)
         self.show_rules = False
+        self.won_game = False
 
         self.start_time = 0
         self.current_time = 0
@@ -191,8 +194,7 @@ class Scene(object):
         if self.round < 1 and self.difficulty_set:
             self.draw_intro()
 
-        if self.round > grid.round_count:
-            # TODO add wins.txt functionality here
+        if self.won_game:
             self.draw_win()
 
         if self.show_rules:
@@ -250,10 +252,13 @@ class Scene(object):
                     self.audio_player.play_sound(
                         "res/sounds/kill-virus.wav")
 
-            if done_virus == protected_zones_count:
-                self.round += 1
+            if done_virus == protected_zones_count and self.round <= self.grid.round_count:
+                if self.round >= 1: 
+                    self.steps_used_per_round.append(self.used_steps)
 
-                if self.round < self.grid.round_count:
+                self.round += 1
+                
+                if self.round <= self.grid.round_count:
                     self.virus_index = rng.randint(1, 4)
                     self.grid.load_round(self.difficulty, self.round)
                     self.used_steps = 0
@@ -409,6 +414,7 @@ class Scene(object):
     def reset_game(self):
         """Reinicia el juego desde el principio."""
         self.round = -3
+        self.won_game = False
         self.virus_moved_amount = 0
         self.intro_finished = False
         self.difficulty_set = False

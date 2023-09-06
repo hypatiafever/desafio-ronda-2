@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 1.4.1
+Versión 1.5.0
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -38,6 +38,7 @@ class Game():
         self.in_rounds = False
 
         self.username = ""
+        self.data_recorded = False
 
         self.mouse_moved_amount = 0
 
@@ -51,9 +52,11 @@ class Game():
     def update(self):
         """Código que se ejecuta en cada frame."""
 
+        print(self.scene.round)
+
         # region --- Events ---
 
-        self.in_rounds = self.scene.round > 0 and self.scene.round < self.scene.grid.round_count
+        self.in_rounds = self.scene.round > 0 and self.scene.round <= self.scene.grid.round_count
 
         # detecta los inputs del usuario
         for event in pygame.event.get():
@@ -99,6 +102,7 @@ class Game():
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
                 if event.key == pygame.K_r and not self.name_menu.active and not self.scene.round == -3:
+                    self.data_recorded = False
                     self.scene.reset_game()
                 if self.scene.round == 0 and self.scene.difficulty_set:  # toma cualquier input de tecla durante la intro
                     self.scene.continue_intro()
@@ -130,12 +134,25 @@ class Game():
                     self.scene.continue_intro()
         # endregion
 
+        if self.scene.round > self.scene.grid.round_count and not self.data_recorded:
+            self.scene.won_game = True
+            self.data_recorded = True
+            self.write_to_scoreboard()
+
         self.scene.update(self.in_rounds, self.paused)
         pygame.display.update()
         self.clock.tick(FPS)
 
-    # def write_to_scoreboard(self):
-    #     with open()
+    def write_to_scoreboard(self):
+        full_string = self.username
+        level_count = 0
+        with open("res/ranking.txt", "a") as sb:
+            for steps in self.scene.steps_used_per_round:
+                level_count += 1
+                full_string += f" n{level_count}: {steps}"
+            full_string += "\n"
+            sb.write(full_string)
+
 
     def finish(self):
         """Finaliza el programa."""
