@@ -55,11 +55,11 @@ class NameMenu(object):
                 else:
                     self.active = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_BACKSPACE and self.active and not event.key in {pygame.K_ESCAPE, pygame.K_RETURN, pygame.K_TAB}:
+            if event.key == pygame.K_BACKSPACE and self.active:
                 self.user_text = self.user_text[:-1]
-            elif self.active:
+            elif self.active and not event.key in {pygame.K_ESCAPE, pygame.K_RETURN, pygame.K_TAB}:
                 self.user_text += event.unicode
-            if event.key == pygame.K_RETURN and len(self.user_text) > 0:
+            if event.key == pygame.K_RETURN and self.user_text and self.user_text[0] != " ":
                 self.active = False
                 name_return = self.user_text
                 self.user_text = ""

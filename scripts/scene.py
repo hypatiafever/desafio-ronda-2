@@ -60,6 +60,7 @@ class Scene(object):
 
         self.start_time = 0
         self.current_time = 0
+        self.elapsed_time = 0
         self.time_limit = 55
         self.timer = self.time_limit
 
@@ -77,11 +78,20 @@ class Scene(object):
         self.current_time = t.time()
 
         if not self.dead:
-            elapsed_time = self.current_time - self.start_time
-            self.timer = self.time_limit - elapsed_time
+            self.elapsed_time = self.current_time - self.start_time
+            self.timer = self.time_limit - self.elapsed_time
 
         if self.timer <= 0:
             self.dead_state()
+
+    def update_timer_bar(self):
+        timer_full_w = 400
+        bg_rect = pygame.Rect(SCREEN_WIDTH // 2 - 416 // 2, 12, 416, 40)
+        fg_rect = pygame.Rect(SCREEN_WIDTH // 2 - timer_full_w // 2, 20, timer_full_w, 24)
+
+        fg_rect.w *= (self.time_limit - self.elapsed_time) / self.time_limit
+
+        return bg_rect, (172, 89, 106), fg_rect, (102, 41, 53)
 
     # region --- Draws ---
 
@@ -126,6 +136,8 @@ class Scene(object):
                     if content_dict["wandering_virus_sin"]:
                         screen.blit(
                             TEXTURES["wandering_virus_sin"], tile_position)
+                pygame.draw.rect(screen, self.update_timer_bar()[1], self.update_timer_bar()[0])
+                pygame.draw.rect(screen, self.update_timer_bar()[3], self.update_timer_bar()[2])
 
             # region --- GUI ---
 
@@ -193,7 +205,6 @@ class Scene(object):
 
         if self.round < 1 and self.difficulty_set:
             self.draw_intro()
-
         if self.won_game:
             self.draw_win()
 
@@ -408,6 +419,7 @@ class Scene(object):
             ]
             self.start_time = 0
             self.current_time = 0
+            self.elapsed_time = 0
             self.timer = self.time_limit
             self.dead = False
 
@@ -419,6 +431,9 @@ class Scene(object):
         self.intro_finished = False
         self.difficulty_set = False
         self.difficulty = 0
+        self.start_time = 0
+        self.current_time = 0
+        self.elapsed_time = 0
         self.audio_player.stop_music()
 
     def update_steps(self, steps_delta: int):
