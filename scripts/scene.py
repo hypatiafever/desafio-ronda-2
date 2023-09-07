@@ -279,10 +279,10 @@ class Scene(object):
 
     def check_kill_player(self):
         """Determina si el jugador es atacado por el virus y activa la condición de muerto del jugador."""
-        all_moving_virus = []
-        all_moving_virus.extend(self.grid.wandering_virus_lin)
-        all_moving_virus.extend(self.grid.wandering_virus_sin)
-        for virus in all_moving_virus:
+        all_moving_virus = {}
+        all_moving_virus.update(self.grid.wandering_virus_lin)
+        all_moving_virus.update(self.grid.wandering_virus_sin)
+        for virus in all_moving_virus.values():
             if virus[0] != None:
                 if self.grid.cells[virus[0]][virus[1]].value == "player":
                     self.audio_player.interrupt_music(
@@ -298,7 +298,7 @@ class Scene(object):
 
     def _move_wandering_virus_lin(self):
         """Controla el movimiento del virus que ataca al jugador."""
-        for virus in self.grid.wandering_virus_lin:
+        for virus in self.grid.wandering_virus_lin.values():
             if virus[0] != None:
                 if virus[0] != 0:
                     virus[0] -= 1
@@ -307,13 +307,30 @@ class Scene(object):
 
     def _move_wandering_virus_sin(self):
         y_delta = 1 if self.virus_moved_amount % 2 else -1
-        for virus in self.grid.wandering_virus_sin:
+        for virus in self.grid.wandering_virus_sin.values():
             if virus[0] != None:
                 if virus[0] != 0:
                     virus[0] -= 1
                 else:
                     virus[0] = 7
                 virus[1] += y_delta
+
+    def reset_virus_pos(self, mouse_pos: tuple):
+        all_moving_virus = {}
+        all_moving_virus.update(self.grid.wandering_virus_lin)
+        all_moving_virus.update(self.grid.wandering_virus_sin)
+        print(f"all_moving_virus: {all_moving_virus}")
+        print(f"wandering_lin: {self.grid.wandering_virus_lin}")
+        print(f"wandering_sin: {self.grid.wandering_virus_sin}")
+
+        for virus_id, cell in all_moving_virus.items():
+            # "- TILE_SIZE" ajusta por el offset de la grid 
+            if (mouse_pos[0] - TILE_SIZE) // TILE_SIZE == cell[0] and (mouse_pos[1] - TILE_SIZE) // TILE_SIZE == cell[1]:
+                if virus_id in self.grid.wandering_virus_lin.keys():
+                    self.grid.wandering_virus_lin[virus_id] = self.grid.original_virus_pos[virus_id]
+                elif virus_id in self.grid.wandering_virus_sin.keys():
+                    self.grid.wandering_virus_sin[virus_id] = self.grid.original_virus_pos[virus_id]
+                    
 
     # region --- Event Handling ---
 

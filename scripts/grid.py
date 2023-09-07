@@ -40,6 +40,8 @@ class Grid():
         self.round_count = 1  # tiene que ser +1
         self.steps_per_round = STEPS_PER_ROUND
 
+        self.virus_amount = 0
+
     def _set_defaults(self):
         """Reinicializa la grilla"""
         for x in range(GRID_SIZE):
@@ -47,8 +49,9 @@ class Grid():
                 self.cells[x][y].value = None
 
         self.protected_zones = []
-        self.wandering_virus_lin = []
-        self.wandering_virus_sin = []
+        self.wandering_virus_lin = {}
+        self.wandering_virus_sin = {}
+        self.original_virus_pos = {}
 
     def load_round(self, difficulty: int, round: int):
         """Setea contenido del grid desde un documento .xlsx"""
@@ -60,6 +63,8 @@ class Grid():
         xlsx_path = f"res/maps/level_{round}.xlsx"
         workbook = xl.load_workbook(xlsx_path)
         sheet_data = workbook.active
+
+        self.virus_amount = 0
 
         for row in sheet_data.iter_rows():
             for cell in row:
@@ -77,20 +82,26 @@ class Grid():
                 if cell.fill.start_color.index == "FFFFFF00":
                     self.protected_zones.append([cell_x, cell_y])
                 if cell.fill.start_color.index == "FF9900FF":
-                    self.wandering_virus_lin.append([cell_x, cell_y])
+                    self.virus_amount += 1
+                    self.wandering_virus_lin[f"virus{self.virus_amount}"] = [cell_x, cell_y]
+                    self.original_virus_pos[f"virus{self.virus_amount}"] = [cell_x, cell_y]
                     cell_content = "wall"
                 if cell.fill.start_color.index == "FFFF00FF":
-                    self.wandering_virus_lin.append([cell_x, cell_y])
+                    self.virus_amount += 1
+                    self.wandering_virus_lin[f"virus{self.virus_amount}"] = [cell_x, cell_y]
+                    self.original_virus_pos[f"virus{self.virus_amount}"] = [cell_x, cell_y]
                 if cell.fill.start_color.index == "FFA64D79":
-                    self.wandering_virus_sin.append([cell_x, cell_y])
+                    self.virus_amount += 1
+                    self.wandering_virus_sin[f"virus{self.virus_amount}"] = [cell_x, cell_y]
+                    self.original_virus_pos[f"virus{self.virus_amount}"] = [cell_x, cell_y]
 
                 self.cells[cell_x][cell_y].value = cell_content
 
     def detect(self, x: int, y: int) -> dict:
         """Devuelve qué objetos existen el punto dado."""
         point = [x, y]
-        exists_in_point = {"wandering_virus_lin": self.wandering_virus_lin.__contains__(point),
-                           "wandering_virus_sin": self.wandering_virus_sin.__contains__(point),
+        exists_in_point = {"wandering_virus_lin": point in self.wandering_virus_lin.values(),
+                           "wandering_virus_sin": point in self.wandering_virus_sin.values(),
                            "protected_zone": self.protected_zones.__contains__(point),
                            }
         return exists_in_point
