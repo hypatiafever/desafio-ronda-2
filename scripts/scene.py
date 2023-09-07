@@ -31,6 +31,7 @@ class Scene(object):
         self.audio_player: AudioHandler = AudioHandler()
         self.used_steps = 0
         self.steps_used_per_round = []
+        self.time_spent_per_round = []
 
         self.robots = [
             "UAIBOT",
@@ -265,6 +266,7 @@ class Scene(object):
             if done_virus == protected_zones_count and self.round <= self.grid.round_count:
                 if self.round >= 1: 
                     self.steps_used_per_round.append(self.used_steps)
+                    self.time_spent_per_round.append(self.elapsed_time)
 
                 self.round += 1
                 
@@ -319,9 +321,6 @@ class Scene(object):
         all_moving_virus = {}
         all_moving_virus.update(self.grid.wandering_virus_lin)
         all_moving_virus.update(self.grid.wandering_virus_sin)
-        print(f"all_moving_virus: {all_moving_virus}")
-        print(f"wandering_lin: {self.grid.wandering_virus_lin}")
-        print(f"wandering_sin: {self.grid.wandering_virus_sin}")
 
         for virus_id, cell in all_moving_virus.items():
             # "- TILE_SIZE" ajusta por el offset de la grid 
@@ -446,6 +445,8 @@ class Scene(object):
         self.won_game = False
         self.intro_finished = False
         self.difficulty_set = False
+        self.steps_used_per_round = []
+        self.time_spent_per_round = []
         self.difficulty = 0
         self.start_time = 0
         self.current_time = 0

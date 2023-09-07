@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.7.1
+Versión 2.7.2
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -14,6 +14,7 @@ from gui import MovementsMenu, Pause, NameMenu, StartMenu
 from pygame import Surface
 from scene import Scene
 from texturedata import load_textures
+from math import trunc
 
 
 class Game():
@@ -145,11 +146,9 @@ class Game():
 
     def write_to_scoreboard(self):
         full_string = self.username
-        level_count = 0
         with open("res/ranking.txt", "a") as sb:
-            for steps in self.scene.steps_used_per_round:
-                level_count += 1
-                full_string += f" n{level_count}: {steps}"
+            for index in range(self.scene.grid.round_count):
+                full_string += f" | n{index + 1}: {self.scene.steps_used_per_round[index]} steps, {trunc(self.scene.time_spent_per_round[index])} seconds"
             full_string += "\n"
             sb.write(full_string)
 
