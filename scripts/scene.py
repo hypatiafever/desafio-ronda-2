@@ -32,7 +32,6 @@ class Scene(object):
         self.used_steps = 0
         self.steps_used_per_round = []
 
-        self.virus_moved_amount = 0
         self.robots = [
             "UAIBOT",
             "UAIBOTA",
@@ -292,7 +291,6 @@ class Scene(object):
     # endregion
 
     def move_virus(self):
-        self.virus_moved_amount += 1
         self._move_wandering_virus_lin()
         self._move_wandering_virus_sin()
 
@@ -306,9 +304,11 @@ class Scene(object):
                     virus[0] = 7
 
     def _move_wandering_virus_sin(self):
-        y_delta = 1 if self.virus_moved_amount % 2 else -1
+        y_delta = 0
         for virus in self.grid.wandering_virus_sin.values():
             if virus[0] != None:
+                y_delta = 1 if virus[1] % 2 else -1
+                
                 if virus[0] != 0:
                     virus[0] -= 1
                 else:
@@ -327,9 +327,9 @@ class Scene(object):
             # "- TILE_SIZE" ajusta por el offset de la grid 
             if (mouse_pos[0] - TILE_SIZE) // TILE_SIZE == cell[0] and (mouse_pos[1] - TILE_SIZE) // TILE_SIZE == cell[1]:
                 if virus_id in self.grid.wandering_virus_lin.keys():
-                    self.grid.wandering_virus_lin[virus_id] = self.grid.original_virus_pos[virus_id]
+                    self.grid.wandering_virus_lin[virus_id] = list(self.grid.original_virus_pos[virus_id])
                 elif virus_id in self.grid.wandering_virus_sin.keys():
-                    self.grid.wandering_virus_sin[virus_id] = self.grid.original_virus_pos[virus_id]
+                    self.grid.wandering_virus_sin[virus_id] = list(self.grid.original_virus_pos[virus_id])
                     
 
     # region --- Event Handling ---
@@ -444,7 +444,6 @@ class Scene(object):
         """Reinicia el juego desde el principio."""
         self.round = -3
         self.won_game = False
-        self.virus_moved_amount = 0
         self.intro_finished = False
         self.difficulty_set = False
         self.difficulty = 0
