@@ -238,6 +238,9 @@ class Scene(object):
         """Renderiza en pantalla el mensaje de haber ganado."""
         self.screen.blit(
             TEXTURES["win"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.screen.blit(
+            TEXTURES["r_return"], (SCREEN_WIDTH // 2 - 590 // 2, SCREEN_HEIGHT // 2 + 200 - m.sin(pygame.time.get_ticks() / 100) * 10)
+        )
 
     # endregion
 

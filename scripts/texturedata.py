@@ -43,6 +43,7 @@ _TEXTURE_DATA = {
     "press_any_black": {"file_path": "res/rules/pressany_black.png", "size": (450, 50)},
     "press_any_white": {"file_path": "res/rules/pressany_white.png", "size": (450, 50)},
     "wandering_virus_rules": {"file_path": "res/rules/wandering_virus_rules.png", "size": (600, 90)},
+    "r_return": {"file_path": "res/rules/r_to_go_back.png", "size": (590, 35)},
     
     # menu
     "easy_button": {"file_path": "res/menu/button_easy.png", "size": (TILE_SIZE*4, TILE_SIZE*2)},
