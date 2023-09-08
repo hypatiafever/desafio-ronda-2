@@ -55,9 +55,6 @@ class Scene(object):
         self.intro_frame_num = 1
         # define la textura de los virus al azar
         self.virus_index = rng.randint(1, 4)
-        self.show_rules = False
-        self.won_game = False
-
         self.start_time = 0
         self.current_time = 0
         self.elapsed_time = 0

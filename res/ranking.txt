@@ -1,2 +1,2 @@
-pepe | n1: 9 steps, 2 seconds
-k} | n1: 9 steps, 2 seconds
+
+pepe | n1: 9 steps, 2 seconds | n2: 19 steps, 7 seconds

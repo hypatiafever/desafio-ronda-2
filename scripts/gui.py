@@ -28,7 +28,7 @@ class NameMenu(object):
         self.active = False
 
     def draw(self):
-        self.screen.blit(TEXTURES["insert_name"], (SCREEN_WIDTH // 2 - 700 // 2, SCREEN_HEIGHT // 2 - 50))
+        self.screen.blit(TEXTURES["insert_name"], (SCREEN_WIDTH // 2 - 252 // 2, SCREEN_HEIGHT // 2 - 50))
         
         self.input_color = self.color_active if self.active else self.color_passive
 
@@ -77,7 +77,7 @@ class MovementsMenu(object):
 
     def draw(self, screen: pygame.Surface):
         """Renderiza los elementos."""
-        screen.blit(TEXTURES["mov_choose"], (SCREEN_WIDTH // 2 - 900 // 2, SCREEN_HEIGHT // 2 - 50))
+        screen.blit(TEXTURES["mov_choose"], (SCREEN_WIDTH // 2 - 420 // 2, SCREEN_HEIGHT // 2 - 50))
         screen.blit(TEXTURES["easy_button"], self.easy_button_rect)
         screen.blit(TEXTURES["normal_button"], self.normal_button_rect)
         screen.blit(TEXTURES["hard_button"], self.hard_button_rect)

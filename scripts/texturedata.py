@@ -56,8 +56,8 @@ _TEXTURE_DATA = {
     "text_background_2": {"file_path": "res/menu/text_background_2.png", "size": (156, 46)},
     "text_background_3": {"file_path": "res/menu/text_background_3.png", "size": (670, 60)},
     "start_menu_background": {"file_path": "res/menu/start_menu_bg.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
-    "insert_name": {"file_path": "res/menu/insert_name.png", "size": (700, 35)},
-    "mov_choose": {"file_path": "res/menu/movement_choose.png", "size": (900, 45)},
+    "insert_name": {"file_path": "res/menu/insert_name.png", "size": (252, 36)},
+    "mov_choose": {"file_path": "res/menu/movement_choose.png", "size": (420, 36)},
 
 }
 
