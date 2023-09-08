@@ -55,6 +55,9 @@ class Scene(object):
         self.intro_frame_num = 1
         # define la textura de los virus al azar
         self.virus_index = rng.randint(1, 4)
+        self.show_rules = False
+        self.won_game = False
+
         self.start_time = 0
         self.current_time = 0
         self.elapsed_time = 0
@@ -86,9 +89,15 @@ class Scene(object):
         bg_rect = pygame.Rect(SCREEN_WIDTH // 2 - 416 // 2, 12, 416, 40)
         fg_rect = pygame.Rect(SCREEN_WIDTH // 2 - timer_full_w // 2, 20, timer_full_w, 24)
 
-        fg_rect.w *= (self.time_limit - self.elapsed_time) / self.time_limit
+        time_left = (self.time_limit - self.elapsed_time) / self.time_limit
+        fg_rect.w *= time_left
+        
+        time_percentage = m.trunc(time_left * 100)
+        percentage_text = self.small_font.render(f"{time_percentage}%", False, WHITE)
+        percentage_rect = percentage_text.get_rect()
+        percentage_rect.center = bg_rect.center
 
-        return bg_rect, (172, 89, 106), fg_rect, (102, 41, 53)
+        return bg_rect, (172, 89, 106), fg_rect, (102, 41, 53), percentage_text, percentage_rect
 
     # region --- Draws ---
 
@@ -133,8 +142,10 @@ class Scene(object):
                     if content_dict["wandering_virus_sin"]:
                         screen.blit(
                             TEXTURES["wandering_virus_sin"], tile_position)
-                pygame.draw.rect(screen, self.update_timer_bar()[1], self.update_timer_bar()[0])
-                pygame.draw.rect(screen, self.update_timer_bar()[3], self.update_timer_bar()[2])
+                timer_bar = self.update_timer_bar()
+                pygame.draw.rect(screen, timer_bar[1], timer_bar[0])
+                pygame.draw.rect(screen, timer_bar[3], timer_bar[2])
+                screen.blit(timer_bar[4], timer_bar[5])
 
             # region --- GUI ---
 
