@@ -11,6 +11,10 @@ FPS = 60
 TEXT_BLOCK_WIDTH = 320
 TEXT_BLOCK_HEIGHT = 30
 
+volume_level = 1.0
+sensitivity_level = 0.6
+MOUSE_MOV_REQ = 100
+
 # colores
 WHITE = (255, 255, 255)
 

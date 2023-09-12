@@ -132,9 +132,11 @@ class Pause(object):
     
 
 class Options(object):
-    def __init__(self, screen: pygame.Surface):
+    def __init__(self, screen: pygame.Surface, sensitivity_multp: int, volume_multp: float):
         self.small_font = pygame.font.Font("res/font/PixelOperator.ttf", 38)
         self.screen = screen
+        self.volume_level = m.trunc(volume_multp * 10)
+        self.sensitivity_level = sensitivity_multp * 10
 
     def draw(self):
         settings_buttons = [TEXTURES["vol_but_up"],
@@ -142,6 +144,11 @@ class Options(object):
                              TEXTURES["sens_but_up"],
                              TEXTURES["sens_but_down"]]
         self.screen.blit(TEXTURES["indicators_rect"], (0, 0))
+        
+        volume_indicator = self.small_font.render()
 
         for button in settings_buttons:
             self.screen.blit(button, (0, 0))
+
+    def handle_input(self):
+        pass
