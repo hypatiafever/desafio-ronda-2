@@ -12,6 +12,7 @@ class StartMenu(object):
         screen.blit(TEXTURES["start_menu_background"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
         screen.blit(TEXTURES["press_any_white"], (SCREEN_WIDTH // 2 - 450 // 2, 570 + m.sin(pygame.time.get_ticks()/100) * 10))
 
+
 class NameMenu(object):
     def __init__(self, screen: pygame.Surface):
         self.small_font = pygame.font.Font("res/font/PixelOperator.ttf", 38)
@@ -65,6 +66,7 @@ class NameMenu(object):
                 self.user_text = ""
                 return name_return
 
+
 class MovementsMenu(object):
     def __init__(self):
 
@@ -100,25 +102,46 @@ class Pause(object):
 
     def __init__(self):
         self.continue_button_rect: pygame.Rect = pygame.Rect(
-            500, SCREEN_HEIGHT//2 - 300, TILE_SIZE*4, TILE_SIZE*2)
+            200, SCREEN_HEIGHT//2 - 200, TILE_SIZE*4, TILE_SIZE*2)
         self.rules_button_rect: pygame.Rect = pygame.Rect(
-            500, SCREEN_HEIGHT//2 - 100, TILE_SIZE*4, TILE_SIZE*2)
+            200, SCREEN_HEIGHT//2 + 50, TILE_SIZE*4, TILE_SIZE*2)
         self.exit_button_rect: pygame.Rect = pygame.Rect(
-            500, SCREEN_HEIGHT//2 + 100, TILE_SIZE*4, TILE_SIZE*2)
+            SCREEN_WIDTH - 200 - TILE_SIZE*4, SCREEN_HEIGHT//2 + 50, TILE_SIZE*4, TILE_SIZE*2)
+        self.options_button_rect: pygame.Rect = pygame.Rect(
+            SCREEN_WIDTH - 200 - TILE_SIZE*4, SCREEN_HEIGHT//2 - 200, TILE_SIZE*4, TILE_SIZE*2)
 
     def draw(self, screen: pygame.Surface):
         """Dibuja los botones en pantalla."""
         screen.blit(TEXTURES["continue_button"], self.continue_button_rect)
         screen.blit(TEXTURES["exit_button"], self.exit_button_rect)
         screen.blit(TEXTURES["rules_button"], self.rules_button_rect)
+        screen.blit(TEXTURES["options_button"], self.options_button_rect)
 
     def define_button_pressed(self) -> int:
         """Define el botón presionado si es que ha sucedido, si no devuelve 0"""
         mouse_pos = pygame.mouse.get_pos()
         if self.continue_button_rect.collidepoint(mouse_pos):
             return 1
-        if self.rules_button_rect.collidepoint(mouse_pos):
-            return 3
         if self.exit_button_rect.collidepoint(mouse_pos):
             return 2
+        if self.rules_button_rect.collidepoint(mouse_pos):
+            return 3
+        if self.options_button_rect.collidepoint(mouse_pos):
+            return 4
         return 0
+    
+
+class Options(object):
+    def __init__(self, screen: pygame.Surface):
+        self.small_font = pygame.font.Font("res/font/PixelOperator.ttf", 38)
+        self.screen = screen
+
+    def draw(self):
+        settings_buttons = [TEXTURES["vol_but_up"],
+                             TEXTURES["vol_but_down"],
+                             TEXTURES["sens_but_up"],
+                             TEXTURES["sens_but_down"]]
+        self.screen.blit(TEXTURES["indicators_rect"], (0, 0))
+
+        for button in settings_buttons:
+            self.screen.blit(button, (0, 0))

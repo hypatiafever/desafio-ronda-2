@@ -4,13 +4,13 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.7.5
+Versión 2.8.0
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
 import pygame
 from constants import *
-from gui import MovementsMenu, Pause, NameMenu, StartMenu
+from gui import MovementsMenu, Pause, NameMenu, StartMenu, Options
 from pygame import Surface
 from scene import Scene
 from texturedata import load_textures
@@ -30,9 +30,10 @@ class Game():
 
         self.start_menu: StartMenu = StartMenu()
         self.name_menu: NameMenu = NameMenu(self.screen)
+        self.options: Options = Options(self.screen)
         self.mov_amount_ui: MovementsMenu = MovementsMenu()
         self.pause: Pause = Pause()
-        self.scene: Scene = Scene(self.screen, self.mov_amount_ui, self.pause, self.name_menu, self.start_menu)
+        self.scene: Scene = Scene(self.screen, self.mov_amount_ui, self.pause, self.name_menu, self.start_menu, self.options)
 
         self.paused = False
         self.running = True
@@ -73,6 +74,8 @@ class Game():
                 if event.key == pygame.K_ESCAPE and self.paused:
                     if self.scene.show_rules:
                         self.scene.show_rules = False
+                    elif self.scene.show_options:
+                        self.scene.show_options = False
                     else:
                         self.paused = False
                     continue
@@ -112,7 +115,7 @@ class Game():
 
             if event.type == pygame.MOUSEBUTTONUP:
 
-                if self.paused and not self.scene.show_rules:  # toma la interacción con los botones de la pausa
+                if self.paused and not self.scene.show_rules and not self.scene.show_options:  # toma la interacción con los botones de la pausa
                     result = self.pause.define_button_pressed()
                     if result == 1:
                         self.paused = False
@@ -120,6 +123,8 @@ class Game():
                         self.running = False
                     if result == 3:
                         self.scene.show_rules = True
+                    if result == 4:
+                        self.scene.show_options = True
 
                 if self.scene.round == -1:  # toma la interacción con los botones de dificultad
                     result = self.mov_amount_ui.define_button_pressed()

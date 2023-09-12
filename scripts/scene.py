@@ -9,14 +9,14 @@ import math as m
 from audio import AudioHandler
 from constants import *
 from grid import Grid
-from gui import MovementsMenu, Pause, NameMenu, StartMenu
+from gui import MovementsMenu, Pause, NameMenu, StartMenu, Options
 from pygame import Surface
 from texturedata import TEXTURES
 
 
 class Scene(object):
 
-    def __init__(self, screen: Surface, mov_m: MovementsMenu, pause: Pause, name_m: NameMenu, start_m: StartMenu):
+    def __init__(self, screen: Surface, mov_m: MovementsMenu, pause: Pause, name_m: NameMenu, start_m: StartMenu, options_m: Options):
 
         # define los tamaños de las fuentes para la gui
         pygame.font.init()
@@ -28,6 +28,7 @@ class Scene(object):
         self.name_menu = name_m
         self.mov_amount_ui = mov_m
         self.pause = pause
+        self.options = options_m
         self.audio_player: AudioHandler = AudioHandler()
         self.used_steps = 0
         self.steps_used_per_round = []
@@ -56,6 +57,7 @@ class Scene(object):
         # define la textura de los virus al azar
         self.virus_index = rng.randint(1, 4)
         self.show_rules = False
+        self.show_options = False
         self.won_game = False
 
         self.start_time = 0
@@ -69,15 +71,18 @@ class Scene(object):
         self.draw(in_rounds, paused)
         self.check_finished()
         self.check_kill_player()
-        if in_rounds and not paused:
-            self.run_timer()
+        if in_rounds:
+            self.run_timer(paused)
 
-    def run_timer(self):
+    def run_timer(self, paused):
         if self.start_time == 0:
             self.start_time = t.time()
-        self.current_time = t.time()
 
-        if not self.dead:
+        delta_time = t.time() - self.current_time
+        self.current_time = t.time()
+        if paused:
+            self.start_time += delta_time
+        if not self.dead and not paused:
             self.elapsed_time = self.current_time - self.start_time
             self.timer = self.time_limit - self.elapsed_time
 
@@ -205,11 +210,8 @@ class Scene(object):
         # Dibuja la pausa y controla el volumen de la musica
         if paused:
             pygame.mouse.set_visible(True)
-            if not self.show_rules:
+            if not self.show_rules and not self.show_options:
                 self.pause.draw(self.screen)
-                self.audio_player.lower_music_vol()
-        else:
-            self.audio_player.reset_music_vol()
 
         if self.round < 1 and self.difficulty_set:
             self.draw_intro()
@@ -219,6 +221,12 @@ class Scene(object):
         if self.show_rules:
             self.screen.blit(
                 TEXTURES["game_rules"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+            self.audio_player.lower_music_vol()
+        else: 
+            self.audio_player.reset_music_vol()
+        
+        if self.show_options:
+            self.options.draw()
 
     def draw_intro(self):
         """Renderiza la introducción en pantalla."""
