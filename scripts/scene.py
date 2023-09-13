@@ -46,7 +46,7 @@ class Scene(object):
             (TILE_SIZE * 8, TILE_SIZE * 8))
         self.grid_background.fill("darkgreen")
 
-        self.round = 2
+        self.round = 5
         self.intro_finished = True
         self.difficulty_set = True
         self.difficulty = 0
@@ -65,6 +65,8 @@ class Scene(object):
         self.elapsed_time = 0
         self.time_limit = 55
         self.timer = self.time_limit
+
+        self.door_turns = 0
 
     def update(self, in_rounds: bool, paused: bool):
         """Actualiza el comportamiento de la escena."""
@@ -126,7 +128,9 @@ class Scene(object):
                                      TILE_SIZE*y + TILE_SIZE)
                     # "+ TILESIZE" compensa por los márgenes
                     content_dict = grid.detect(x, y)
-
+                    door = grid.is_there_door((x, y))
+                    if door:
+                        screen.blit(door.texture, tile_position)
                     if content_dict["protected_zone"]:
                         screen.blit(
                             TEXTURES["protected_zone"], tile_position)
@@ -158,6 +162,13 @@ class Scene(object):
                 screen.blit(timer_bar[4], timer_bar[5])
 
             # region --- GUI ---
+
+            if self.round == 1:
+                self.screen.blit(
+                    TEXTURES["sin_virus_rules"], (672, 450))
+            if self.round == 3:
+                self.screen.blit(
+                    TEXTURES["firewall_rules"], (672, 450))
 
             grid_end_area = (GRID_SIZE * TILE_SIZE + TILE_SIZE,
                              GRID_SIZE * TILE_SIZE + TILE_SIZE)
@@ -322,10 +333,15 @@ class Scene(object):
     def check_and_break_firewall(self, pos: tuple):
         firewall_to_break = self.grid.is_there_firewall(pos)
         if firewall_to_break:
-            print(f"x = {pos[0] // TILE_SIZE + 1}")
-            print(f"y = {pos[1] // TILE_SIZE + 1}")
             self.grid.cells[pos[0] // TILE_SIZE - 1][pos[1] // TILE_SIZE - 1].value = None
             self.grid.firewall_rects.pop(firewall_to_break)
+            self.update_steps(1)
+    
+    def check_and_open_door(self, pos:tuple):
+        for door in self.grid.doors:
+            if pos[0] // TILE_SIZE - 1 == door.x and pos[1] // TILE_SIZE - 1 == door.y:
+                door.open()
+
 
     # endregion
 
@@ -412,15 +428,28 @@ class Scene(object):
             else:
                 farther_cell = next_cell
 
+            
+            next_cell_door = self.grid.is_there_door(next_cell.xy)
+            next_cell_empty = True if next_cell.value is None else False
+            if next_cell_door:
+               if next_cell_door.value is not None:
+                   next_cell_empty = False
+
+            farther_cell_door = self.grid.is_there_door(farther_cell.xy)
+            farther_cell_empty = True if farther_cell.value is None else False
+            if farther_cell_door:
+               if farther_cell_door.value is not None:
+                   farther_cell_empty = False
+
             if self.robots[0] == "UAIBOT":
 
-                if next_cell.value is None:
+                if next_cell_empty:
                     self.grid.move_element(
                         self.player_cell, next_cell.xy)
                     self.audio_player.play_sound("res/sounds/move.wav")
                     moved = True
 
-                if next_cell.value == "virus" and farther_cell.value is None:
+                if next_cell.value == "virus" and farther_cell_empty:
                     self.grid.move_element(next_cell, farther_cell.xy)
                     self.grid.move_element(
                         self.player_cell, next_cell.xy)
@@ -429,7 +458,7 @@ class Scene(object):
 
             if self.robots[0] == "UAIBOTA":  # UAIBOTA
 
-                if next_cell.value is None:
+                if next_cell_empty:
                     self.grid.move_element(
                         self.player_cell, next_cell.xy)
                     self.audio_player.play_sound("res/sounds/move.wav")
@@ -439,13 +468,13 @@ class Scene(object):
                             prev_cell, self.player_cell.xy)
 
             if self.robots[0] == "UAIBOTINO":  # UAIBOTINO
-                if next_cell.value is None:
+                if next_cell_empty:
                     self.grid.move_element(
                         self.player_cell, next_cell.xy)
                     moved = True
                     self.audio_player.play_sound("res/sounds/move.wav")
 
-                if next_cell.value == "virus" and farther_cell.value is None:
+                if next_cell.value == "virus" and farther_cell_empty:
                     self.grid.move_element(
                         self.player_cell, farther_cell.xy)
                     self.audio_player.play_sound("res/sounds/jump.wav")
@@ -494,6 +523,8 @@ class Scene(object):
     def update_steps(self, steps_delta: int):
         """Maneja el sistema de turnos, haciendo el avance y el reseteo en caso de que se terminen los movimientos habilitados."""
         self.used_steps += steps_delta
+        for door in self.grid.doors:
+            door.pass_turns()
         if self.used_steps >= self.grid.round_steps:
             self.restart()
             self.audio_player.interrupt_music(

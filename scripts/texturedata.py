@@ -20,6 +20,11 @@ _TEXTURE_DATA = {
     "wall": {"file_path": "res/scenery/pared.png", "size": (TILE_SIZE, TILE_SIZE)},
     "firewall": {"file_path": "res/scenery/firewall.png", "size": (TILE_SIZE, TILE_SIZE)},
     "protected_zone": {"file_path": "res/scenery/areaprotegida.png", "size": (TILE_SIZE, TILE_SIZE)},
+    "door_1": {"file_path": "res/scenery/door5.png", "size": (TILE_SIZE, TILE_SIZE)},
+    "door_2": {"file_path": "res/scenery/door4.png", "size": (TILE_SIZE, TILE_SIZE)},
+    "door_3": {"file_path": "res/scenery/door3.png", "size": (TILE_SIZE, TILE_SIZE)},
+    "door_4": {"file_path": "res/scenery/door2.png", "size": (TILE_SIZE, TILE_SIZE)},
+    "door_0": {"file_path": "res/scenery/door1.png", "size": (TILE_SIZE, TILE_SIZE)},
     "win": {"file_path": "res/scenery/win.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
     "mouse_crosshair": {"file_path": "res/menu/mouse_crosshair.png", "size": (TILE_SIZE//2, TILE_SIZE//2)},
 
@@ -47,6 +52,8 @@ _TEXTURE_DATA = {
 
     # rules
     "press_any_black": {"file_path": "res/rules/pressany_black.png", "size": (450, 50)},
+    "sin_virus_rules": {"file_path": "res/rules/sin_virus_rules.png", "size": (500, 100)},
+    "firewall_rules": {"file_path": "res/rules/firewall_rule.png", "size": (500, 70)},
     "press_any_white": {"file_path": "res/rules/pressany_white.png", "size": (450, 50)},
     "wandering_virus_rules": {"file_path": "res/rules/wandering_virus_rules.png", "size": (600, 90)},
     "r_return": {"file_path": "res/rules/r_to_go_back.png", "size": (590, 35)},

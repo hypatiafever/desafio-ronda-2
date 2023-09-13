@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.9.1
+Versión 2.10.0
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -107,6 +107,7 @@ class Game():
                 elif event.type == pygame.MOUSEBUTTONUP and not self.scene.dead:
                     self.scene.reset_virus_pos(event.pos)
                     self.scene.check_and_break_firewall(event.pos)
+                    self.scene.check_and_open_door(event.pos)
 
             elif event.type == pygame.KEYDOWN and not self.in_rounds:  # maneja el input fuera de las rondas
                 if event.key == pygame.K_ESCAPE:

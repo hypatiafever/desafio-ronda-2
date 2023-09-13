@@ -4,6 +4,7 @@ from constants import *
 import openpyxl as xl
 from typing import Optional
 from pygame import Rect
+from texturedata import TEXTURES
 
 STEPS_PER_ROUND = ((25, 50, 40, 40, 40, 35, 50, 60, 65, 80),  # Fácil
                    (15, 30, 25, 25, 25, 20, 40, 45, 45, 65),  # Normal
@@ -29,7 +30,32 @@ class Cell():
 
     def __str__(self) -> str:
         return f"({self.x}, {self.y}) - value: {self.value}"
+    
+class Door(Cell):
+    def __init__(self, x: int, y: int, value: str | None = None):
+        super().__init__(x, y, value)
+        self.turns_to_close = 0
+        self.door_textures = [
+            TEXTURES["door_0"],
+            TEXTURES["door_1"],
+            TEXTURES["door_2"],
+            TEXTURES["door_3"],
+            TEXTURES["door_4"]
+        ]
+        self.texture = self.door_textures[self.turns_to_close]
+        self.value = "closed"
+    
+    def open(self):
+        self.turns_to_close = 4
+        self.value = None
+        self.texture = self.door_textures[self.turns_to_close]
 
+    def pass_turns(self):
+        if self.turns_to_close > 0:
+            self.turns_to_close -= 1
+        if self.turns_to_close == 0:
+            self.value = "closed"
+        self.texture = self.door_textures[self.turns_to_close]
 
 class Grid():
 
@@ -38,7 +64,7 @@ class Grid():
                       for x in range(GRID_SIZE)]
         self._set_defaults()
         self.round_steps = 0
-        self.round_count = 3
+        self.round_count = 6
         self.steps_per_round = STEPS_PER_ROUND
 
         self.virus_amount = 0
@@ -50,6 +76,7 @@ class Grid():
                 self.cells[x][y].value = None
 
         self.protected_zones = []
+        self.doors = []
         self.wandering_virus_lin = {}
         self.wandering_virus_sin = {}
         self.original_virus_pos = {}
@@ -103,12 +130,21 @@ class Grid():
                     self.virus_amount += 1
                     self.wandering_virus_sin[f"virus{self.virus_amount}"] = [cell_x, cell_y]
                     self.original_virus_pos[f"virus{self.virus_amount}"] = [cell_x, cell_y]
+                if cell.fill.start_color.index == "FF46BDC6":
+                    self.virus_amount += 1
+                    self.wandering_virus_sin[f"virus{self.virus_amount}"] = [cell_x, cell_y]
+                    self.original_virus_pos[f"virus{self.virus_amount}"] = [cell_x, cell_y]
+                    cell_content = "wall"
+                if cell.fill.start_color.index == "FF434343":
+                    self.doors.append(Door(cell_x, cell_y, "closed"))
+                #434343 door color
 
                 self.cells[cell_x][cell_y].value = cell_content
 
     def detect(self, x: int, y: int) -> dict:
         """Devuelve qué objetos existen el punto dado."""
         point = [x, y]
+
         exists_in_point = {"wandering_virus_lin": point in self.wandering_virus_lin.values(),
                            "wandering_virus_sin": point in self.wandering_virus_sin.values(),
                            "protected_zone": self.protected_zones.__contains__(point),
@@ -121,6 +157,12 @@ class Grid():
             if rect.collidepoint(newpoint):
                 return firewall
         return ""
+    
+    def is_there_door(self, point:tuple) -> Door | None:
+        for door in self.doors:
+            if door.x == point[0] and door.y == point[1]:
+                return door
+        return None
     
     def move_element(self, cell_from: Cell, x_y_to: tuple):
         """Mueve el valor de cell_from a la celda en la coordenada x_y_to"""
