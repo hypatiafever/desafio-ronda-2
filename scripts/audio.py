@@ -11,8 +11,8 @@ class AudioHandler():
     def __init__(self):
         pass
         # self.sounds_channel: mixer.Channel = mixer.Channel(1)
-        # self.sounds_channel.set_volume(0.3 * volume_level)
-        # mixer.music.set_volume(1)
+        # self.sounds_channel.set_volume(0.3 * (volume_level / 10))
+        # mixer.music.set_volume(1 * (volume_level / 10))
 
     def play_sound(self, file_path: str):
         pass
@@ -43,9 +43,9 @@ class AudioHandler():
     def lower_music_vol(self):
         pass
         """Baja el volúmen, pensado para el menú de pausa."""
-        # mixer.music.set_volume(0.3 * volume_level)
+        # mixer.music.set_volume(0.3 * (volume_level / 10))
 
     def reset_music_vol(self):
         pass
         """Reestablece el volúmen original."""
-        # mixer.music.set_volume(1 * volume_level)
+        # mixer.music.set_volume(1 * (volume_level / 10))

@@ -34,14 +34,11 @@ class Scene(object):
         self.steps_used_per_round = []
         self.time_spent_per_round = []
 
-
-        self.original_robots = [
+        self.robots = [
             "UAIBOT",
             "UAIBOTA",
             "UAIBOTINO",
         ]
-
-        self.robots = self.original_robots
 
         self.grid = Grid()
         # dibuja fondo verde en pantalla
@@ -140,6 +137,9 @@ class Scene(object):
                     if grid.cells[x][y].value == "wall":
                         screen.blit(
                             TEXTURES["wall"], tile_position)
+                    if grid.cells[x][y].value == "firewall":
+                        screen.blit(
+                            TEXTURES["firewall"], tile_position)
                     if grid.cells[x][y].value == "virus":
                         screen.blit(TEXTURES[f"virus{self.virus_index}"],
                                     tile_position)
@@ -274,15 +274,6 @@ class Scene(object):
         # len(self.grid.deactivated_protected_zones)
 
         if self.intro_finished:
-            if mario_skin:
-                self.original_robots = [
-                    "UAIBOT_MARIO",
-                    "UAIBOTA_MARIO",
-                    "UAIBOTINO_MARIO",
-                ]
-
-            self.robots = self.original_robots
-
             done_virus = 0
 
             for pos in self.grid.protected_zones:
@@ -328,13 +319,20 @@ class Scene(object):
                         "res/sounds/main-theme.mp3", "res/sounds/lost.wav")
                     self.dead_state()
 
+    def check_and_break_firewall(self, pos: tuple):
+        firewall_to_break = self.grid.is_there_firewall(pos)
+        if firewall_to_break:
+            self.grid.cells[self.grid.firewall_rects[firewall_to_break]
+                            .x // TILE_SIZE][self.grid.firewall_rects[firewall_to_break].y // TILE_SIZE].value = None
+            self.grid.firewall_rects.pop(firewall_to_break)
+
     # endregion
 
     def move_virus(self):
-        self._move_wandering_virus_lin()
-        self._move_wandering_virus_sin()
+        self.move_wandering_virus_lin()
+        self.move_wandering_virus_sin()
 
-    def _move_wandering_virus_lin(self):
+    def move_wandering_virus_lin(self):
         """Controla el movimiento del virus que ataca al jugador."""
         for virus in self.grid.wandering_virus_lin.values():
             if virus[0] != None:
@@ -343,7 +341,7 @@ class Scene(object):
                 else:
                     virus[0] = 7
 
-    def _move_wandering_virus_sin(self):
+    def move_wandering_virus_sin(self):
         y_delta = 0
         for virus in self.grid.wandering_virus_sin.values():
             if virus[0] != None:
@@ -413,7 +411,7 @@ class Scene(object):
             else:
                 farther_cell = next_cell
 
-            if self.robots[0] == self.original_robots[0]:  # UAIBOT
+            if self.robots[0] == "UAIBOT":
 
                 if next_cell.value is None:
                     self.grid.move_element(
@@ -421,14 +419,14 @@ class Scene(object):
                     self.audio_player.play_sound("res/sounds/move.wav")
                     moved = True
 
-                if next_cell.value == "virus" and not farther_cell.value in {"wall", "virus", "dead_virus"}:
+                if next_cell.value == "virus" and farther_cell.value is None:
                     self.grid.move_element(next_cell, farther_cell.xy)
                     self.grid.move_element(
                         self.player_cell, next_cell.xy)
                     self.audio_player.play_sound("res/sounds/move.wav")
                     moved = True
 
-            if self.robots[0] == self.original_robots[1]:  # UAIBOTA
+            if self.robots[0] == "UAIBOTA":  # UAIBOTA
 
                 if next_cell.value is None:
                     self.grid.move_element(
@@ -439,14 +437,14 @@ class Scene(object):
                         self.grid.move_element(
                             prev_cell, self.player_cell.xy)
 
-            if self.robots[0] == self.original_robots[2]:  # UAIBOTINO
+            if self.robots[0] == "UAIBOTINO":  # UAIBOTINO
                 if next_cell.value is None:
                     self.grid.move_element(
                         self.player_cell, next_cell.xy)
                     moved = True
                     self.audio_player.play_sound("res/sounds/move.wav")
 
-                if next_cell.value == "virus" and not farther_cell.value in {"wall", "virus", "dead_virus"}:
+                if next_cell.value == "virus" and farther_cell.value is None:
                     self.grid.move_element(
                         self.player_cell, farther_cell.xy)
                     self.audio_player.play_sound("res/sounds/jump.wav")
@@ -472,7 +470,6 @@ class Scene(object):
             self.grid.load_round(self.difficulty, self.round)
             self.grid.wandering_virus_sin = stay_still_virus
             self.used_steps = 0
-            self.robots = self.original_robots
             self.start_time = 0
             self.current_time = 0
             self.elapsed_time = 0

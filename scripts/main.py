@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.8.3
+Versión 2.9.0
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -55,6 +55,7 @@ class Game():
         """Código que se ejecuta en cada frame."""
 
         # region --- Events ---
+        
 
         self.in_rounds = self.scene.round > 0 and self.scene.round <= self.scene.grid.round_count
 
@@ -70,11 +71,11 @@ class Game():
 
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == pygame.KEYDOWN and self.in_rounds:  # maneja la activación del estado de pausa
+            elif event.type == pygame.KEYDOWN and self.in_rounds:  # maneja la activación del estado de pausa
                 if event.key == pygame.K_ESCAPE and not self.paused and not self.scene.dead:
                     self.paused = True
                     continue
-                if event.key == pygame.K_ESCAPE and self.paused:
+                elif event.key == pygame.K_ESCAPE and self.paused:
                     if self.scene.show_rules:
                         self.scene.show_rules = False
                     elif self.scene.show_options:
@@ -87,59 +88,61 @@ class Game():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                         self.scene.move("right")
-                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                    elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.scene.move("left")
-                    if event.key == pygame.K_UP or event.key == pygame.K_w:
+                    elif event.key == pygame.K_UP or event.key == pygame.K_w:
                         self.scene.move("up")
-                    if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         self.scene.move("down")
-                    if event.key == pygame.K_r:
+                    elif event.key == pygame.K_r:
                         self.scene.restart()
-                    if event.key == pygame.K_e:
+                        self.scene.move_wandering_virus_sin()
+                    elif event.key == pygame.K_e:
                         self.scene.change_robot()
-                if event.type == pygame.MOUSEMOTION and not self.scene.dead:
+                elif event.type == pygame.MOUSEMOTION and not self.scene.dead:
                     self.mouse_moved_amount += 1
-                    if self.mouse_moved_amount >= MOUSE_MOV_REQ * sensitivity_level:
+                    if self.mouse_moved_amount >= MOUSE_MOV_REQ * vars.sensitivity_level:
                         self.scene.move_virus()
                         self.mouse_moved_amount = 0
-                if event.type == pygame.MOUSEBUTTONUP and not self.scene.dead:
+                elif event.type == pygame.MOUSEBUTTONUP and not self.scene.dead:
                     self.scene.reset_virus_pos(event.pos)
+                    self.scene.check_and_break_firewall(event.pos)
 
-            if event.type == pygame.KEYDOWN and not self.in_rounds:  # maneja el input fuera de las rondas
+            elif event.type == pygame.KEYDOWN and not self.in_rounds:  # maneja el input fuera de las rondas
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
-                if event.key == pygame.K_r and not self.name_menu.active and not self.scene.round == -3:
+                elif event.key == pygame.K_r and not self.name_menu.active and not self.scene.round == -3:
                     self.data_recorded = False
                     self.scene.reset_game()
-                if self.scene.round == 0 and self.scene.difficulty_set:  # toma cualquier input de tecla durante la intro
+                elif self.scene.round == 0 and self.scene.difficulty_set:  # toma cualquier input de tecla durante la intro
                     self.scene.continue_intro()
-                if self.scene.round == -3:
+                elif self.scene.round == -3:
                     self.scene.round += 1
 
-            if event.type == pygame.MOUSEBUTTONUP:
+            elif event.type == pygame.MOUSEBUTTONUP:
 
                 if self.paused and not self.scene.show_rules and not self.scene.show_options:  # toma la interacción con los botones de la pausa
                     result = self.pause.define_button_pressed()
                     if result == 1:
                         self.paused = False
-                    if result == 2:
+                    elif result == 2:
                         self.running = False
-                    if result == 3:
+                    elif result == 3:
                         self.scene.show_rules = True
-                    if result == 4:
+                    elif result == 4:
                         self.scene.show_options = True
 
-                if self.scene.round == -1:  # toma la interacción con los botones de dificultad
+                elif self.scene.round == -1:  # toma la interacción con los botones de dificultad
                     result = self.mov_amount_ui.define_button_pressed()
                     if result:
                         self.scene.difficulty = result - 1
                         self.scene.difficulty_set = True
                         self.scene.round += 1
 
-                if self.scene.round == -3:
+                elif self.scene.round == -3:
                     self.scene.round += 1
 
-                if self.scene.round == 0 and self.scene.difficulty_set:  # toma el paso de la intro
+                elif self.scene.round == 0 and self.scene.difficulty_set:  # toma el paso de la intro
                     self.scene.continue_intro()
         # endregion
 

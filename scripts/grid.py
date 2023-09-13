@@ -3,6 +3,7 @@
 from constants import *
 import openpyxl as xl
 from typing import Optional
+from pygame import Rect
 
 STEPS_PER_ROUND = ((25, 50, 40, 40, 40, 35, 50, 60, 65, 80),  # Fácil
                    (15, 30, 25, 25, 25, 20, 40, 45, 45, 65),  # Normal
@@ -37,7 +38,7 @@ class Grid():
                       for x in range(GRID_SIZE)]
         self._set_defaults()
         self.round_steps = 0
-        self.round_count = 2  # tiene que ser +1
+        self.round_count = 3
         self.steps_per_round = STEPS_PER_ROUND
 
         self.virus_amount = 0
@@ -52,6 +53,9 @@ class Grid():
         self.wandering_virus_lin = {}
         self.wandering_virus_sin = {}
         self.original_virus_pos = {}
+        self.firewall_rects = {}
+        self.virus_amount = 0
+        self.firewall_amount = 0
 
     def load_round(self, difficulty: int, round: int):
         """Setea contenido del grid desde un documento .xlsx"""
@@ -65,6 +69,7 @@ class Grid():
         sheet_data = workbook.active
 
         self.virus_amount = 0
+        self.firewall_amount = 0
 
         for row in sheet_data.iter_rows():
             for cell in row:
@@ -73,8 +78,12 @@ class Grid():
                 cell_content = None
                 cell_x = int(cell.value[0])
                 cell_y = int(cell.value[3])
-                if cell.fill.start_color.index == "FFE69138":
+                if cell.fill.start_color.index == "FFE69138": 
                     cell_content = "wall"
+                if cell.fill.start_color.index == "FF980000": 
+                    cell_content = "firewall"
+                    self.firewall_amount += 1
+                    self.firewall_rects[f"firewall{self.firewall_amount}"] = Rect(TILE_SIZE * cell_x, TILE_SIZE * cell_y, TILE_SIZE, TILE_SIZE)
                 if cell.fill.start_color.index == "FF00FF00":
                     cell_content = "player"
                 if cell.fill.start_color.index == "FFFF0000":
@@ -106,6 +115,13 @@ class Grid():
                            }
         return exists_in_point
 
+    def is_there_firewall(self, point: tuple) -> str:
+        newpoint = (point[0] + TILE_SIZE, point[1] + TILE_SIZE)
+        for firewall, rect in self.firewall_rects.items():
+            if rect.collidepoint(point):
+                return firewall
+        return ""
+    
     def move_element(self, cell_from: Cell, x_y_to: tuple):
         """Mueve el valor de cell_from a la celda en la coordenada x_y_to"""
         cell_to = self.cells[x_y_to[0]][x_y_to[1]]

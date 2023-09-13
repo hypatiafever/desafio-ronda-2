@@ -18,6 +18,7 @@ _TEXTURE_DATA = {
     # escenario
     "background": {"file_path": "res/scenery/fondo-ciberespacio.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
     "wall": {"file_path": "res/scenery/pared.png", "size": (TILE_SIZE, TILE_SIZE)},
+    "firewall": {"file_path": "res/scenery/firewall.png", "size": (TILE_SIZE, TILE_SIZE)},
     "protected_zone": {"file_path": "res/scenery/areaprotegida.png", "size": (TILE_SIZE, TILE_SIZE)},
     "win": {"file_path": "res/scenery/win.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
     "mouse_crosshair": {"file_path": "res/menu/mouse_crosshair.png", "size": (TILE_SIZE, TILE_SIZE)},
