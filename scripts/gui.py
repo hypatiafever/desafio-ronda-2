@@ -5,12 +5,16 @@ import math as m
 from constants import *
 from texturedata import TEXTURES
 
+
 class StartMenu(object):
     def __init__(self):
         pass
+
     def draw(self, screen: pygame.Surface):
-        screen.blit(TEXTURES["start_menu_background"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
-        screen.blit(TEXTURES["press_any_white"], (SCREEN_WIDTH // 2 - 450 // 2, 570 + m.sin(pygame.time.get_ticks()/100) * 10))
+        screen.blit(TEXTURES["start_menu_background"],
+                    (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+        screen.blit(TEXTURES["press_any_white"], (SCREEN_WIDTH // 2 -
+                    450 // 2, 570 + m.sin(pygame.time.get_ticks()/100) * 10))
 
 
 class NameMenu(object):
@@ -29,16 +33,19 @@ class NameMenu(object):
         self.active = False
 
     def draw(self):
-        self.screen.blit(TEXTURES["insert_name"], (SCREEN_WIDTH // 2 - 252 // 2, SCREEN_HEIGHT // 2 - 50))
-        
+        self.screen.blit(
+            TEXTURES["insert_name"], (SCREEN_WIDTH // 2 - 252 // 2, SCREEN_HEIGHT // 2 - 50))
+
         self.input_color = self.color_active if self.active else self.color_passive
 
-        pygame.draw.rect(self.screen, self.color_passive, self.input_rect_bigger)
+        pygame.draw.rect(self.screen, self.color_passive,
+                         self.input_rect_bigger)
         pygame.draw.rect(self.screen, self.input_color, self.input_rect)
 
-        input_text = self.small_font.render(self.user_text, True, self.input_text_color)
-        input_text_rect = input_text.get_rect(centerx = self.screen.get_rect().centerx,
-                                              centery = self.screen.get_rect().centery + 100)
+        input_text = self.small_font.render(
+            self.user_text, True, self.input_text_color)
+        input_text_rect = input_text.get_rect(centerx=self.screen.get_rect().centerx,
+                                              centery=self.screen.get_rect().centery + 100)
         self.screen.blit(input_text, input_text_rect)
 
         self.input_rect.w = max(512, input_text_rect.w + 10)
@@ -62,8 +69,11 @@ class NameMenu(object):
                 self.user_text += event.unicode
             if event.key == pygame.K_RETURN and self.user_text and self.user_text[0] != " ":
                 self.active = False
+                if self.user_text == "MARIO":
+                    change_mario()
                 name_return = self.user_text
                 self.user_text = ""
+
                 return name_return
 
 
@@ -79,7 +89,8 @@ class MovementsMenu(object):
 
     def draw(self, screen: pygame.Surface):
         """Renderiza los elementos."""
-        screen.blit(TEXTURES["mov_choose"], (SCREEN_WIDTH // 2 - 420 // 2, SCREEN_HEIGHT // 2 - 50))
+        screen.blit(TEXTURES["mov_choose"], (SCREEN_WIDTH //
+                    2 - 420 // 2, SCREEN_HEIGHT // 2 - 50))
         screen.blit(TEXTURES["easy_button"], self.easy_button_rect)
         screen.blit(TEXTURES["normal_button"], self.normal_button_rect)
         screen.blit(TEXTURES["hard_button"], self.hard_button_rect)
@@ -129,26 +140,78 @@ class Pause(object):
         if self.options_button_rect.collidepoint(mouse_pos):
             return 4
         return 0
-    
+
 
 class Options(object):
-    def __init__(self, screen: pygame.Surface, sensitivity_multp: int, volume_multp: float):
+    def __init__(self, sensitivity_multp: int, volume_multp: float):
         self.small_font = pygame.font.Font("res/font/PixelOperator.ttf", 38)
-        self.screen = screen
-        self.volume_level = m.trunc(volume_multp * 10)
-        self.sensitivity_level = sensitivity_multp * 10
+        # self.volume_level = m.trunc(volume_multp * 10)
+        # self.sensitivity_level = sensitivity_multp * 10
 
-    def draw(self):
-        settings_buttons = [TEXTURES["vol_but_up"],
-                             TEXTURES["vol_but_down"],
-                             TEXTURES["sens_but_up"],
-                             TEXTURES["sens_but_down"]]
-        self.screen.blit(TEXTURES["indicators_rect"], (0, 0))
-        
-        volume_indicator = self.small_font.render()
+    def draw(self, screen: pygame.Surface):
+        # settings_buttons = [TEXTURES["vol_but_up"],
+        #                      TEXTURES["vol_but_down"],
+        #                      TEXTURES["sens_but_up"],
+        #                      TEXTURES["sens_but_down"]]
 
-        for button in settings_buttons:
-            self.screen.blit(button, (0, 0))
+        self.vol_up_button_rect: pygame.Rect = pygame.Rect(
+            300, SCREEN_HEIGHT//2 - 200, TILE_SIZE*2, TILE_SIZE*2)
+        self.vol_down_button_rect: pygame.Rect = pygame.Rect(
+            300, SCREEN_HEIGHT//2 + 50, TILE_SIZE*2, TILE_SIZE*2)
+        self.sens_up_button_rect: pygame.Rect = pygame.Rect(
+            SCREEN_WIDTH - 300 - TILE_SIZE, SCREEN_HEIGHT//2 + 50, TILE_SIZE*2, TILE_SIZE*2)
+        self.sens_down_button_rect: pygame.Rect = pygame.Rect(
+            SCREEN_WIDTH - 300 - TILE_SIZE, SCREEN_HEIGHT//2 - 200, TILE_SIZE*2, TILE_SIZE*2)
+
+        screen.blit(TEXTURES["but_up"], self.vol_up_button_rect)
+        screen.blit(TEXTURES["but_down"], self.vol_down_button_rect)
+        screen.blit(TEXTURES["but_up"], self.sens_down_button_rect)
+        screen.blit(TEXTURES["but_down"], self.sens_up_button_rect)
+
+        volume_bar = self.update_volume_bar(screen)
+        pygame.draw.rect(screen, volume_bar[1], volume_bar[0])
+        pygame.draw.rect(screen, volume_bar[3], volume_bar[2])
+        screen.blit(volume_bar[4], volume_bar[5])
+
+        sens_bar = self.update_sens_bar(screen)
+        pygame.draw.rect(screen, sens_bar[1], sens_bar[0])
+        pygame.draw.rect(screen, sens_bar[3], sens_bar[2])
+        screen.blit(sens_bar[4], sens_bar[5])
+
+    def update_volume_bar(self, screen: pygame.Surface):
+
+        volume_full_w = 200
+        back_rect = pygame.Rect(SCREEN_WIDTH // 4 - 108,
+                                SCREEN_HEIGHT // 2 - 30, 316, 50)
+        front_rect = pygame.Rect(SCREEN_WIDTH // 4 - volume_full_w //
+                                 2, SCREEN_HEIGHT // 2 - 22, volume_full_w * 1.5, 34)
+
+        front_rect.w *= volume_level
+
+        volume_percentage = m.trunc(volume_level * 100)
+        percentage_text = self.small_font.render(
+            f"{volume_percentage}%", False, WHITE)
+        percentage_rect = percentage_text.get_rect()
+        percentage_rect.center = back_rect.center
+
+        return back_rect, (172, 89, 106), front_rect, (102, 41, 53), percentage_text, percentage_rect
+
+    def update_sens_bar(self, screen: pygame.Surface):
+
+        sens_full_w = 200
+        back_rect = pygame.Rect(
+            SCREEN_WIDTH // 4 * 3 - 68, SCREEN_HEIGHT // 2 - 30, 316, 50)
+        front_rect = pygame.Rect(SCREEN_WIDTH // 4 * 3 - sens_full_w //
+                                 2 - 40, SCREEN_HEIGHT // 2 - 22, sens_full_w * 1.5, 34)
+
+        front_rect.w *= sensitivity_level
+        sens_percentage = m.trunc(sensitivity_level * 100)
+        percentage_text = self.small_font.render(
+            f"{sens_percentage}%", False, WHITE)
+        percentage_rect = percentage_text.get_rect()
+        percentage_rect.center = back_rect.center
+
+        return back_rect, (172, 89, 106), front_rect, (102, 41, 53), percentage_text, percentage_rect
 
     def handle_input(self):
         pass

@@ -10,6 +10,11 @@ _TEXTURE_DATA = {
     "UAIBOTA": {"file_path": "res/robots/UAIBOTA.png", "size": (TILE_SIZE, TILE_SIZE)},
     "UAIBOTINO": {"file_path": "res/robots/UAIBOTINO.png", "size": (TILE_SIZE, TILE_SIZE)},
 
+    # robots mario (TOP SECRET)
+    "UAIBOT_MARIO": {"file_path": "res/robots/UAIBOT_MARIO.png", "size": (TILE_SIZE, TILE_SIZE)},
+    "UAIBOTA_MARIO": {"file_path": "res/robots/UAIBOTA.png", "size": (TILE_SIZE, TILE_SIZE)},
+    "UAIBOTINO_MARIO": {"file_path": "res/robots/UAIBOTINO.png", "size": (TILE_SIZE, TILE_SIZE)},
+
     # escenario
     "background": {"file_path": "res/scenery/fondo-ciberespacio.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
     "wall": {"file_path": "res/scenery/pared.png", "size": (TILE_SIZE, TILE_SIZE)},
@@ -44,7 +49,7 @@ _TEXTURE_DATA = {
     "press_any_white": {"file_path": "res/rules/pressany_white.png", "size": (450, 50)},
     "wandering_virus_rules": {"file_path": "res/rules/wandering_virus_rules.png", "size": (600, 90)},
     "r_return": {"file_path": "res/rules/r_to_go_back.png", "size": (590, 35)},
-    
+
     # menu
     "easy_button": {"file_path": "res/menu/button_easy.png", "size": (TILE_SIZE*4, TILE_SIZE*2)},
     "normal_button": {"file_path": "res/menu/button_normal.png", "size": (TILE_SIZE*4, TILE_SIZE*2)},
@@ -61,15 +66,11 @@ _TEXTURE_DATA = {
     "continue_button": {"file_path": "res/pause/button_continue.png", "size": (TILE_SIZE*4, TILE_SIZE*2)},
     "rules_button": {"file_path": "res/pause/button_rules.png", "size": (TILE_SIZE*4, TILE_SIZE*2)},
     "options_button": {"file_path": "res/pause/button_options.png", "size": (TILE_SIZE*4, TILE_SIZE*2)},
-    "indicators_rect": {"file_path": "res/pause/volume_input_rect.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
-    "vol_but_up": {"file_path": "res/pause/volume_button_up.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
-    "vol_but_up_pressed": {"file_path": "res/pause/volume_button_up_pressed.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
-    "vol_but_down": {"file_path": "res/pause/volume_button_down.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
-    "vol_but_down_pressed": {"file_path": "res/pause/volume_button_down_pressed.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
-    "sens_but_up": {"file_path": "res/pause/sensitivity_button_up.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
-    "sens_but_up_pressed": {"file_path": "res/pause/sensitivity_button_up_pressed.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
-    "sens_but_down": {"file_path": "res/pause/sensitivity_button_down.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
-    "sens_but_down_pressed": {"file_path": "res/pause/sensitivity_button_down_pressed.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
+    "indicators_rect": {"file_path": "res/pause/input_rect.png", "size": (TILE_SIZE*2, TILE_SIZE*2)},
+    "but_up": {"file_path": "res/pause/button_up.png", "size": (TILE_SIZE*2, TILE_SIZE*2)},
+    "but_up_pressed": {"file_path": "res/pause/button_up_pressed.png", "size": (TILE_SIZE*2, TILE_SIZE*2)},
+    "but_down": {"file_path": "res/pause/button_down.png", "size": (TILE_SIZE*2, TILE_SIZE*2)},
+    "but_down_pressed": {"file_path": "res/pause/button_down_pressed.png", "size": (TILE_SIZE*2, TILE_SIZE*2)},
 
 }
 

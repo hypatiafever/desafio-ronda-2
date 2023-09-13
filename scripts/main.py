@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.8.1
+Versión 2.8.2
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -30,7 +30,7 @@ class Game():
 
         self.start_menu: StartMenu = StartMenu()
         self.name_menu: NameMenu = NameMenu(self.screen)
-        self.options: Options = Options(self.screen)
+        self.options: Options = Options(self.screen, 5)
         self.mov_amount_ui: MovementsMenu = MovementsMenu()
         self.pause: Pause = Pause()
         self.scene: Scene = Scene(self.screen, self.mov_amount_ui, self.pause, self.name_menu, self.start_menu, self.options)
@@ -96,7 +96,7 @@ class Game():
                         self.scene.change_robot()
                 if event.type == pygame.MOUSEMOTION and not self.scene.dead:
                     self.mouse_moved_amount += 1
-                    if self.mouse_moved_amount >= MOUSE_MOV_REQ:
+                    if self.mouse_moved_amount >= MOUSE_MOV_REQ * sensitivity_level:
                         self.scene.move_virus()
                         self.mouse_moved_amount = 0
                 if event.type == pygame.MOUSEBUTTONUP and not self.scene.dead:

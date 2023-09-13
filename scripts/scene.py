@@ -34,11 +34,14 @@ class Scene(object):
         self.steps_used_per_round = []
         self.time_spent_per_round = []
 
-        self.robots = [
+
+        self.original_robots = [
             "UAIBOT",
             "UAIBOTA",
             "UAIBOTINO",
         ]
+
+        self.robots = self.original_robots
 
         self.grid = Grid()
         # dibuja fondo verde en pantalla
@@ -89,16 +92,18 @@ class Scene(object):
         if self.timer <= 0:
             self.dead_state()
 
-    def update_timer_bar(self):
+    def update_timer_bar(self) -> list:
         timer_full_w = 400
         bg_rect = pygame.Rect(SCREEN_WIDTH // 2 - 416 // 2, 12, 416, 40)
-        fg_rect = pygame.Rect(SCREEN_WIDTH // 2 - timer_full_w // 2, 20, timer_full_w, 24)
+        fg_rect = pygame.Rect(SCREEN_WIDTH // 2 -
+                              timer_full_w // 2, 20, timer_full_w, 24)
 
         time_left = (self.time_limit - self.elapsed_time) / self.time_limit
         fg_rect.w *= time_left
-        
+
         time_percentage = m.trunc(time_left * 100)
-        percentage_text = self.small_font.render(f"{time_percentage}%", False, WHITE)
+        percentage_text = self.small_font.render(
+            f"{time_percentage}%", False, WHITE)
         percentage_rect = percentage_text.get_rect()
         percentage_rect.center = bg_rect.center
 
@@ -222,11 +227,11 @@ class Scene(object):
             self.screen.blit(
                 TEXTURES["game_rules"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
             self.audio_player.lower_music_vol()
-        else: 
+        else:
             self.audio_player.reset_music_vol()
-        
+
         if self.show_options:
-            self.options.draw()
+            self.options.draw(self.screen)
 
     def draw_intro(self):
         """Renderiza la introducción en pantalla."""
@@ -240,7 +245,7 @@ class Scene(object):
                 TEXTURES["game_rules"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
             self.screen.blit(
                 TEXTURES["press_any_white"], (SCREEN_WIDTH - 450, SCREEN_HEIGHT - 45, 450, 50))
-    
+
     def continue_intro(self):
         if self.intro_frame_num < 7:  # pasa al siguiente frame o termina la animaciòn
             self.intro_frame_num += 1
@@ -255,7 +260,8 @@ class Scene(object):
         self.screen.blit(
             TEXTURES["win"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
         self.screen.blit(
-            TEXTURES["r_return"], (SCREEN_WIDTH // 2 - 590 // 2, SCREEN_HEIGHT // 2 + 200 - m.sin(pygame.time.get_ticks() / 100) * 10)
+            TEXTURES["r_return"], (SCREEN_WIDTH // 2 - 590 // 2, SCREEN_HEIGHT //
+                                   2 + 200 - m.sin(pygame.time.get_ticks() / 100) * 10)
         )
 
     # endregion
@@ -268,6 +274,14 @@ class Scene(object):
         # len(self.grid.deactivated_protected_zones)
 
         if self.intro_finished:
+            if mario_skin:
+                self.original_robots = [
+                    "UAIBOT_MARIO",
+                    "UAIBOTA_MARIO",
+                    "UAIBOTINO_MARIO",
+                ]
+
+            self.robots = self.original_robots
 
             done_virus = 0
 
@@ -283,15 +297,20 @@ class Scene(object):
                         "res/sounds/kill-virus.wav")
 
             if done_virus == protected_zones_count and self.round <= self.grid.round_count:
-                if self.round >= 1: 
+
+                if self.round >= 1:
                     self.steps_used_per_round.append(self.used_steps)
                     self.time_spent_per_round.append(self.elapsed_time)
 
                 self.round += 1
-                
+
                 if self.round <= self.grid.round_count:
                     self.virus_index = rng.randint(1, 4)
                     self.grid.load_round(self.difficulty, self.round)
+                    self.start_time = 0
+                    self.current_time = 0
+                    self.elapsed_time = 0
+                    self.timer = self.time_limit
                     self.used_steps = 0
                 return True
 
@@ -328,12 +347,17 @@ class Scene(object):
         y_delta = 0
         for virus in self.grid.wandering_virus_sin.values():
             if virus[0] != None:
-                y_delta = 1 if virus[1] % 2 else -1
-                
+                y_delta = 1 if virus[0] % 2 else -1
+
                 if virus[0] != 0:
                     virus[0] -= 1
                 else:
                     virus[0] = 7
+                    if virus[1] < 7:
+                        virus[1] += 1
+                    if virus[1] == 7:
+                        virus[1] = 1
+
                 virus[1] += y_delta
 
     def reset_virus_pos(self, mouse_pos: tuple):
@@ -342,13 +366,14 @@ class Scene(object):
         all_moving_virus.update(self.grid.wandering_virus_sin)
 
         for virus_id, cell in all_moving_virus.items():
-            # "- TILE_SIZE" ajusta por el offset de la grid 
+            # "- TILE_SIZE" ajusta por el offset de la grid
             if (mouse_pos[0] - TILE_SIZE) // TILE_SIZE == cell[0] and (mouse_pos[1] - TILE_SIZE) // TILE_SIZE == cell[1]:
                 if virus_id in self.grid.wandering_virus_lin.keys():
-                    self.grid.wandering_virus_lin[virus_id] = list(self.grid.original_virus_pos[virus_id])
+                    self.grid.wandering_virus_lin[virus_id] = list(
+                        self.grid.original_virus_pos[virus_id])
                 elif virus_id in self.grid.wandering_virus_sin.keys():
-                    self.grid.wandering_virus_sin[virus_id] = list(self.grid.original_virus_pos[virus_id])
-                    
+                    self.grid.wandering_virus_sin[virus_id] = list(
+                        self.grid.original_virus_pos[virus_id])
 
     # region --- Event Handling ---
 
@@ -388,7 +413,7 @@ class Scene(object):
             else:
                 farther_cell = next_cell
 
-            if self.robots[0] == "UAIBOT":
+            if self.robots[0] == self.original_robots[0]:  # UAIBOT
 
                 if next_cell.value is None:
                     self.grid.move_element(
@@ -403,7 +428,7 @@ class Scene(object):
                     self.audio_player.play_sound("res/sounds/move.wav")
                     moved = True
 
-            if self.robots[0] == "UAIBOTA":
+            if self.robots[0] == self.original_robots[1]:  # UAIBOTA
 
                 if next_cell.value is None:
                     self.grid.move_element(
@@ -414,7 +439,7 @@ class Scene(object):
                         self.grid.move_element(
                             prev_cell, self.player_cell.xy)
 
-            if self.robots[0] == "UAIBOTINO":
+            if self.robots[0] == self.original_robots[2]:  # UAIBOTINO
                 if next_cell.value is None:
                     self.grid.move_element(
                         self.player_cell, next_cell.xy)
@@ -447,11 +472,7 @@ class Scene(object):
             self.grid.load_round(self.difficulty, self.round)
             self.grid.wandering_virus_sin = stay_still_virus
             self.used_steps = 0
-            self.robots = [
-                "UAIBOT",
-                "UAIBOTA",
-                "UAIBOTINO",
-            ]
+            self.robots = self.original_robots
             self.start_time = 0
             self.current_time = 0
             self.elapsed_time = 0
