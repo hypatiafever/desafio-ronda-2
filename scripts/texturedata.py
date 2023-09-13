@@ -21,7 +21,7 @@ _TEXTURE_DATA = {
     "firewall": {"file_path": "res/scenery/firewall.png", "size": (TILE_SIZE, TILE_SIZE)},
     "protected_zone": {"file_path": "res/scenery/areaprotegida.png", "size": (TILE_SIZE, TILE_SIZE)},
     "win": {"file_path": "res/scenery/win.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
-    "mouse_crosshair": {"file_path": "res/menu/mouse_crosshair.png", "size": (TILE_SIZE, TILE_SIZE)},
+    "mouse_crosshair": {"file_path": "res/menu/mouse_crosshair.png", "size": (TILE_SIZE//2, TILE_SIZE//2)},
 
     # virus
     "wandering_virus_lin": {"file_path": "res/virus/virus3.png", "size": (TILE_SIZE, TILE_SIZE)},
@@ -72,6 +72,8 @@ _TEXTURE_DATA = {
     "but_up_pressed": {"file_path": "res/pause/button_up_pressed.png", "size": (TILE_SIZE*2, TILE_SIZE*2)},
     "but_down": {"file_path": "res/pause/button_down.png", "size": (TILE_SIZE*2, TILE_SIZE*2)},
     "but_down_pressed": {"file_path": "res/pause/button_down_pressed.png", "size": (TILE_SIZE*2, TILE_SIZE*2)},
+    "volume_text": {"file_path": "res/pause/volume_text.png", "size": (156, 46)},
+    "hardness_text": {"file_path": "res/pause/hardness_text.png", "size": (196, 78)},
 
 }
 

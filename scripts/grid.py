@@ -83,7 +83,7 @@ class Grid():
                 if cell.fill.start_color.index == "FF980000": 
                     cell_content = "firewall"
                     self.firewall_amount += 1
-                    self.firewall_rects[f"firewall{self.firewall_amount}"] = Rect(TILE_SIZE * cell_x, TILE_SIZE * cell_y, TILE_SIZE, TILE_SIZE)
+                    self.firewall_rects[f"firewall{self.firewall_amount}"] = Rect(TILE_SIZE * cell_x + TILE_SIZE, TILE_SIZE * cell_y + TILE_SIZE, TILE_SIZE, TILE_SIZE)
                 if cell.fill.start_color.index == "FF00FF00":
                     cell_content = "player"
                 if cell.fill.start_color.index == "FFFF0000":
@@ -116,9 +116,9 @@ class Grid():
         return exists_in_point
 
     def is_there_firewall(self, point: tuple) -> str:
-        newpoint = (point[0] + TILE_SIZE, point[1] + TILE_SIZE)
+        newpoint = (point[0], point[1])
         for firewall, rect in self.firewall_rects.items():
-            if rect.collidepoint(point):
+            if rect.collidepoint(newpoint):
                 return firewall
         return ""
     

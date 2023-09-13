@@ -5,3 +5,4 @@ pepe | n1: 9 steps, 2 seconds | n2: 23 steps, 8 seconds
 pepe | n1: 10 steps, 4 seconds | n2: 19 steps, 5 seconds
 lol | n1: 10 steps, 6 seconds | n2: 19 steps, 7 seconds
 asdad | n1: 14 steps, 9 seconds | n2: 19 steps, 5 seconds
+dadada | n1: 14 steps, 8 seconds | n2: 21 steps, 5 seconds | n3: 23 steps, 23 seconds

@@ -166,6 +166,8 @@ class Options(object):
         screen.blit(TEXTURES[self.vol_down_skin], self.vol_down_button_rect)
         screen.blit(TEXTURES[self.sens_up_skin], self.sens_up_button_rect)
         screen.blit(TEXTURES[self.sens_down_skin], self.sens_down_button_rect)
+        screen.blit(TEXTURES["volume_text"], (SCREEN_WIDTH // 4 - 32, 50))
+        screen.blit(TEXTURES["hardness_text"], (SCREEN_WIDTH // 4 * 3 - 75, 50))
 
         volume_bar = self.update_volume_bar()
         pygame.draw.rect(screen, volume_bar[1], volume_bar[0])
@@ -185,9 +187,9 @@ class Options(object):
         front_rect = pygame.Rect(SCREEN_WIDTH // 4 - volume_full_w //
                                  2, SCREEN_HEIGHT // 2 - 22, volume_full_w * 1.5, 34)
 
-        front_rect.w *= vars.volume_level / 10
+        front_rect.w *= game_vars.volume_level / 10
 
-        volume_percentage = m.trunc(vars.volume_level * 10)
+        volume_percentage = m.trunc(game_vars.volume_level * 10)
         percentage_text = self.small_font.render(
             f"{volume_percentage}%", False, WHITE)
         percentage_rect = percentage_text.get_rect()
@@ -203,8 +205,8 @@ class Options(object):
         front_rect = pygame.Rect(SCREEN_WIDTH // 4 * 3 - sens_full_w //
                                  2 - 40, SCREEN_HEIGHT // 2 - 22, sens_full_w * 1.5, 34)
 
-        front_rect.w *= vars.sensitivity_level / 10
-        sens_percentage = m.trunc(vars.sensitivity_level * 10)
+        front_rect.w *= game_vars.sensitivity_level / 10
+        sens_percentage = m.trunc(game_vars.sensitivity_level * 10)
         percentage_text = self.small_font.render(
             f"{sens_percentage}%", False, WHITE)
         percentage_rect = percentage_text.get_rect()
@@ -214,19 +216,19 @@ class Options(object):
 
     def handle_input(self, event):
 
-        if event.type == pygame.MOUSEBUTTONDOWN:  # TODO arreglar esa solución podrida para que no sobre pase el 1
-            if self.vol_up_button_rect.collidepoint(event.pos) and vars.volume_level < 10:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.vol_up_button_rect.collidepoint(event.pos) and game_vars.volume_level < 10:
                 self.vol_up_skin = "but_up_pressed"
-                vars.volume_level += 1
-            if self.vol_down_button_rect.collidepoint(event.pos) and vars.volume_level > 0:
+                game_vars.volume_level += 1
+            if self.vol_down_button_rect.collidepoint(event.pos) and game_vars.volume_level > 0:
                 self.vol_down_skin = "but_down_pressed"
-                vars.volume_level -= 1
-            if self.sens_up_button_rect.collidepoint(event.pos) and vars.sensitivity_level < 10:
+                game_vars.volume_level -= 1
+            if self.sens_up_button_rect.collidepoint(event.pos) and game_vars.sensitivity_level < 10:
                 self.sens_up_skin = "but_up_pressed"
-                vars.sensitivity_level += 1
-            if self.sens_down_button_rect.collidepoint(event.pos) and vars.sensitivity_level > 0:
+                game_vars.sensitivity_level += 1
+            if self.sens_down_button_rect.collidepoint(event.pos) and game_vars.sensitivity_level > 0:
                 self.sens_down_skin = "but_down_pressed"
-                vars.sensitivity_level -= 1
+                game_vars.sensitivity_level -= 1
         if event.type == pygame.MOUSEBUTTONUP:
             self.vol_up_skin = "but_up"
             self.vol_down_skin = "but_down"

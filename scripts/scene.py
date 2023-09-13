@@ -46,9 +46,9 @@ class Scene(object):
             (TILE_SIZE * 8, TILE_SIZE * 8))
         self.grid_background.fill("darkgreen")
 
-        self.round = -3
-        self.intro_finished = False
-        self.difficulty_set = False
+        self.round = 2
+        self.intro_finished = True
+        self.difficulty_set = True
         self.difficulty = 0
 
         self.player_cell = None
@@ -322,8 +322,9 @@ class Scene(object):
     def check_and_break_firewall(self, pos: tuple):
         firewall_to_break = self.grid.is_there_firewall(pos)
         if firewall_to_break:
-            self.grid.cells[self.grid.firewall_rects[firewall_to_break]
-                            .x // TILE_SIZE][self.grid.firewall_rects[firewall_to_break].y // TILE_SIZE].value = None
+            print(f"x = {pos[0] // TILE_SIZE + 1}")
+            print(f"y = {pos[1] // TILE_SIZE + 1}")
+            self.grid.cells[pos[0] // TILE_SIZE - 1][pos[1] // TILE_SIZE - 1].value = None
             self.grid.firewall_rects.pop(firewall_to_break)
 
     # endregion

@@ -2,9 +2,9 @@
 class GameVars():
     def __init__(self):
         self.volume_level = 10
-        self.sensitivity_level = 6
+        self.sensitivity_level = 4
 
-vars = GameVars()
+game_vars = GameVars()
 
 # medidas
 SCREEN_WIDTH = 1280
