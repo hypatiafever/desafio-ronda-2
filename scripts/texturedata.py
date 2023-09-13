@@ -53,6 +53,7 @@ _TEXTURE_DATA = {
     # rules
     "press_any_black": {"file_path": "res/rules/pressany_black.png", "size": (450, 50)},
     "sin_virus_rules": {"file_path": "res/rules/sin_virus_rules.png", "size": (500, 100)},
+    "door_rules": {"file_path": "res/rules/door_rules.png", "size": (500, 100)},
     "firewall_rules": {"file_path": "res/rules/firewall_rule.png", "size": (500, 70)},
     "press_any_white": {"file_path": "res/rules/pressany_white.png", "size": (450, 50)},
     "wandering_virus_rules": {"file_path": "res/rules/wandering_virus_rules.png", "size": (600, 90)},

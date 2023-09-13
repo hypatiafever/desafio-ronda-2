@@ -7,3 +7,5 @@ lol | n1: 10 steps, 6 seconds | n2: 19 steps, 7 seconds
 asdad | n1: 14 steps, 9 seconds | n2: 19 steps, 5 seconds
 dadada | n1: 14 steps, 8 seconds | n2: 21 steps, 5 seconds | n3: 23 steps, 23 seconds
 K | n1: 12 steps, 4 seconds | n2: 19 steps, 5 seconds | n3: 19 steps, 9 seconds | n4: 18 steps, 12 seconds | n5: 11 steps, 11 seconds
+poponoto | n1: 10 steps, 6 seconds | n2: 19 steps, 7 seconds | n3: 19 steps, 12 seconds | n4: 20 steps, 9 seconds | n5: 28 steps, 23 seconds | n6: 26 steps, 22 seconds | n7: 17 steps, 28 seconds | n8: 28 steps, 25 seconds | n9: 39 steps, 33 seconds | n10: 39 steps, 25 seconds
+monoctamnulo77 | n1: 14 steps, 5 seconds | n2: 19 steps, 7 seconds | n3: 33 steps, 12 seconds | n4: 30 steps, 19 seconds | n5: 28 steps, 19 seconds | n6: 28 steps, 14 seconds | n7: 19 steps, 11 seconds | n8: 32 steps, 22 seconds | n9: 32 steps, 24 seconds | n10: 18 steps, 32 seconds

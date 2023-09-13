@@ -6,8 +6,8 @@ from typing import Optional
 from pygame import Rect
 from texturedata import TEXTURES
 
-STEPS_PER_ROUND = ((25, 50, 40, 40, 40, 35, 50, 60, 65, 80),  # Fácil
-                   (15, 30, 25, 25, 25, 20, 40, 45, 45, 65),  # Normal
+STEPS_PER_ROUND = ((25, 50, 40, 40, 40, 35, 50, 60, 65, 80),  # Fácil TODO acomodar dificultades
+                   (15, 30, 25, 25, 70, 20, 40, 45, 45, 65),  # Normal
                    (10, 19, 15, 19, 12, 11, 29, 22, 27, 34))  # Difícil
 
 
@@ -64,7 +64,7 @@ class Grid():
                       for x in range(GRID_SIZE)]
         self._set_defaults()
         self.round_steps = 0
-        self.round_count = 6
+        self.round_count = 10
         self.steps_per_round = STEPS_PER_ROUND
 
         self.virus_amount = 0

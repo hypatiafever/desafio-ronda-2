@@ -46,9 +46,9 @@ class Scene(object):
             (TILE_SIZE * 8, TILE_SIZE * 8))
         self.grid_background.fill("darkgreen")
 
-        self.round = 5
-        self.intro_finished = True
-        self.difficulty_set = True
+        self.round = -3
+        self.intro_finished = False
+        self.difficulty_set = False
         self.difficulty = 0
 
         self.player_cell = None
@@ -75,6 +75,8 @@ class Scene(object):
         self.check_kill_player()
         if in_rounds:
             self.run_timer(paused)
+        if self.dead:
+            self.dead_state()
 
     def run_timer(self, paused):
         if self.start_time == 0:
@@ -169,6 +171,9 @@ class Scene(object):
             if self.round == 3:
                 self.screen.blit(
                     TEXTURES["firewall_rules"], (672, 450))
+            if self.round == 6:
+                self.screen.blit(
+                    TEXTURES["door_rules"], (672, 450))
 
             grid_end_area = (GRID_SIZE * TILE_SIZE + TILE_SIZE,
                              GRID_SIZE * TILE_SIZE + TILE_SIZE)
@@ -325,10 +330,10 @@ class Scene(object):
         all_moving_virus.update(self.grid.wandering_virus_sin)
         for virus in all_moving_virus.values():
             if virus[0] != None:
-                if self.grid.cells[virus[0]][virus[1]].value == "player":
+                if self.grid.cells[virus[0]][virus[1]].value == "player" and not self.dead:
+                    self.dead = True
                     self.audio_player.interrupt_music(
                         "res/sounds/main-theme.mp3", "res/sounds/lost.wav")
-                    self.dead_state()
 
     def check_and_break_firewall(self, pos: tuple):
         firewall_to_break = self.grid.is_there_firewall(pos)
