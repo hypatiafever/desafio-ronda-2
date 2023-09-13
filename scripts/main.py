@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.8.2
+Versión 2.8.3
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -30,7 +30,7 @@ class Game():
 
         self.start_menu: StartMenu = StartMenu()
         self.name_menu: NameMenu = NameMenu(self.screen)
-        self.options: Options = Options(self.screen, 5)
+        self.options: Options = Options()
         self.mov_amount_ui: MovementsMenu = MovementsMenu()
         self.pause: Pause = Pause()
         self.scene: Scene = Scene(self.screen, self.mov_amount_ui, self.pause, self.name_menu, self.start_menu, self.options)
@@ -64,6 +64,9 @@ class Game():
                 self.username = self.name_menu.handle_writing(event)
                 if self.username:
                     self.scene.round += 1  
+            
+            if self.scene.show_options:
+                self.options.handle_input(event)
 
             if event.type == pygame.QUIT:
                 self.running = False
