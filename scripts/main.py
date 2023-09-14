@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.11.0
+Versión 2.11.1
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -160,7 +160,7 @@ class Game():
         full_string = self.username
         with open("res/ranking.txt", "a") as sb:
             for index in range(self.scene.grid.round_count):
-                full_string += f" | n{index + 1}: {self.scene.steps_used_per_round[index]} steps, {trunc(self.scene.time_spent_per_round[index])} seconds"
+                full_string += f" | n{index + 1}: {self.scene.steps_used_per_round[index] + 1} steps, {trunc(self.scene.time_spent_per_round[index])} seconds"
             full_string += "\n"
             sb.write(full_string)
 

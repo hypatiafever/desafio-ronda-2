@@ -6,9 +6,9 @@ from typing import Optional
 from pygame import Rect
 from texturedata import TEXTURES
 
-STEPS_PER_ROUND = ((25, 50, 40, 40, 40, 35, 50, 60, 65, 80),  # Fácil TODO acomodar dificultades
-                   (15, 30, 25, 25, 70, 20, 40, 45, 45, 65),  # Normal
-                   (10, 19, 15, 19, 12, 11, 29, 22, 27, 34))  # Difícil
+STEPS_PER_ROUND = ((25, 40, 45, 45, 55, 50, 35, 60, 65, 30),  # Fácil 
+                   (18, 30, 35, 35, 45, 35, 25, 45, 45, 20),  # Normal
+                   (11, 20, 24, 21, 29, 25, 18, 31, 34, 16))  # Difícil
 
 
 class Cell():
