@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.11.1
+Versión 2.11.2
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -157,6 +157,7 @@ class Game():
         self.clock.tick(FPS)
 
     def write_to_scoreboard(self):
+        """Guarda la información del usuario en el ranking.txt."""
         full_string = self.username
         with open("res/ranking.txt", "a") as sb:
             for index in range(self.scene.grid.round_count):

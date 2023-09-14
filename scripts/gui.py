@@ -7,10 +7,13 @@ from texturedata import TEXTURES
 
 
 class StartMenu(object):
+    """Menú del inicio."""
+
     def __init__(self):
         pass
 
     def draw(self, screen: pygame.Surface):
+        """Dibuja los elementos del menú."""
         screen.blit(TEXTURES["start_menu_background"],
                     (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
         screen.blit(TEXTURES["press_any_white"], (SCREEN_WIDTH // 2 -
@@ -18,6 +21,8 @@ class StartMenu(object):
 
 
 class NameMenu(object):
+    """Menú donde se define el nombre del jugador."""
+
     def __init__(self, screen: pygame.Surface):
         self.small_font = pygame.font.Font("res/font/PixelOperator.ttf", 38)
         self.screen = screen
@@ -33,6 +38,8 @@ class NameMenu(object):
         self.active = False
 
     def draw(self):
+        """Dibuja los elementos del menú."""
+
         self.screen.blit(
             TEXTURES["insert_name"], (SCREEN_WIDTH // 2 - 252 // 2, SCREEN_HEIGHT // 2 - 50))
 
@@ -56,6 +63,8 @@ class NameMenu(object):
         self.input_rect_bigger.centery += 100
 
     def handle_writing(self, event):
+        """Controla el input relacionado al cuadro de texto y devuelve el nombre introducido."""
+
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:  # click derecho
                 if self.input_rect.collidepoint(event.pos):
@@ -78,6 +87,8 @@ class NameMenu(object):
 
 
 class MovementsMenu(object):
+    """Menú de elección de la dificultad (movimientos)."""
+
     def __init__(self):
 
         self.easy_button_rect: pygame.Rect = pygame.Rect(
@@ -89,6 +100,7 @@ class MovementsMenu(object):
 
     def draw(self, screen: pygame.Surface):
         """Renderiza los elementos."""
+
         screen.blit(TEXTURES["mov_choose"], (SCREEN_WIDTH //
                     2 - 420 // 2, SCREEN_HEIGHT // 2 - 50))
         screen.blit(TEXTURES["easy_button"], self.easy_button_rect)
@@ -99,6 +111,7 @@ class MovementsMenu(object):
         """Define el botón que es presionado para la dificultad,
         siendo fácil, normal y difícil 1, 2, y 3 respectivamente
         o devolviendo 0 si no se ha presionado un botón."""
+
         mouse_pos = pygame.mouse.get_pos()
         if self.easy_button_rect.collidepoint(mouse_pos):
             return 1
@@ -110,6 +123,7 @@ class MovementsMenu(object):
 
 
 class Pause(object):
+    """Menú de pausa."""
 
     def __init__(self):
         self.continue_button_rect: pygame.Rect = pygame.Rect(
@@ -123,6 +137,7 @@ class Pause(object):
 
     def draw(self, screen: pygame.Surface):
         """Dibuja los botones en pantalla."""
+
         screen.blit(TEXTURES["continue_button"], self.continue_button_rect)
         screen.blit(TEXTURES["exit_button"], self.exit_button_rect)
         screen.blit(TEXTURES["rules_button"], self.rules_button_rect)
@@ -130,6 +145,7 @@ class Pause(object):
 
     def define_button_pressed(self) -> int:
         """Define el botón presionado si es que ha sucedido, si no devuelve 0"""
+
         mouse_pos = pygame.mouse.get_pos()
         if self.continue_button_rect.collidepoint(mouse_pos):
             return 1
@@ -143,6 +159,8 @@ class Pause(object):
 
 
 class Options(object):
+    """Menú de opciones (volúmen y sensibilidad)."""
+
     def __init__(self):
         self.small_font = pygame.font.Font("res/font/PixelOperator.ttf", 38)
 
@@ -161,6 +179,7 @@ class Options(object):
         self.sens_down_skin = "but_down"
 
     def draw(self, screen: pygame.Surface):
+        """Dibuja los elementos del menú."""
 
         screen.blit(TEXTURES[self.vol_up_skin], self.vol_up_button_rect)
         screen.blit(TEXTURES[self.vol_down_skin], self.vol_down_button_rect)
@@ -180,15 +199,19 @@ class Options(object):
         screen.blit(sens_bar[4], sens_bar[5])
 
     def update_volume_bar(self):
+        """Actualiza el aspecto de la barra de volúmen y devuelve los elementos para dibujarla."""
 
         volume_full_w = 200
+        # posicionamiento de las barras
         back_rect = pygame.Rect(SCREEN_WIDTH // 4 - 108,
                                 SCREEN_HEIGHT // 2 - 30, 316, 50)
         front_rect = pygame.Rect(SCREEN_WIDTH // 4 - volume_full_w //
                                  2, SCREEN_HEIGHT // 2 - 22, volume_full_w * 1.5, 34)
 
+        # escala el ancho dependiendo del nivel de volumen
         front_rect.w *= game_vars.volume_level / 10
 
+        # genera el texto que indica el porcentaje
         volume_percentage = m.trunc(game_vars.volume_level * 10)
         percentage_text = self.small_font.render(
             f"{volume_percentage}%", False, WHITE)

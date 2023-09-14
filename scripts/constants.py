@@ -1,5 +1,7 @@
-"""Módulo que contiene constantes globales."""
+"""Módulo que contiene constantes y variables globales."""
+
 class GameVars():
+    """Nos permite tener las variables globales juntas en un solo objeto."""
     def __init__(self):
         self.volume_level = 10
         self.sensitivity_level = 4

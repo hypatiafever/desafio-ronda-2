@@ -1,1 +1,0 @@
-hola | n1: 10 steps, 3 seconds | n2: 19 steps, 5 seconds | n3: 23 steps, 13 seconds | n4: 20 steps, 10 seconds | n5: 28 steps, 34 seconds | n6: 24 steps, 42 seconds | n7: 17 steps, 12 seconds | n8: 30 steps, 39 seconds | n9: 33 steps, 39 seconds | n10: 15 steps, 23 seconds

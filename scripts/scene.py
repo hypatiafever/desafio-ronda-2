@@ -79,6 +79,7 @@ class Scene(object):
             self.dead_state()
 
     def run_timer(self, paused):
+        """Maneja el funcionamiento del timer del juego"""
         if self.start_time == 0:
             self.start_time = t.time()
 
@@ -94,6 +95,7 @@ class Scene(object):
             self.dead_state()
 
     def update_timer_bar(self) -> list:
+        """Maneja la barra de progreso del timer y devuelve los elementos para dibujarla."""
         timer_full_w = 400
         bg_rect = pygame.Rect(SCREEN_WIDTH // 2 - 416 // 2, 12, 416, 40)
         fg_rect = pygame.Rect(SCREEN_WIDTH // 2 -
@@ -218,14 +220,14 @@ class Scene(object):
 
             # endregion
 
-        if self.round == -3:
+        if self.round == -3:  # start menu
             self.start_menu.draw(screen)
             self.audio_player.play_music("res/sounds/menu-theme.mp3")
 
-        if self.round == -2:
+        if self.round == -2:  # menú de definición del nombre del jugador
             self.name_menu.draw()
-        # Dibuja el menu de movimientos y reproduce la musica correspondiente
-        if self.round == -1:
+
+        if self.round == -1:  # menú de elección de movimientos
             self.mov_amount_ui.draw(self.screen)
 
         # Dibuja la pausa y controla el volumen de la musica
@@ -263,6 +265,7 @@ class Scene(object):
                 TEXTURES["press_any_white"], (SCREEN_WIDTH - 450, SCREEN_HEIGHT - 45, 450, 50))
 
     def continue_intro(self):
+        """Maneja el pasar de los frames de la intro."""
         if self.intro_frame_num < 7:  # pasa al siguiente frame o termina la animaciòn
             self.intro_frame_num += 1
         else:
@@ -336,6 +339,7 @@ class Scene(object):
                         "res/sounds/main-theme.mp3", "res/sounds/lost.wav")
 
     def check_and_break_firewall(self, pos: tuple):
+        """Rompe la pared que coincide con la posición que se da."""
         firewall_to_break = self.grid.is_there_firewall(pos)
         if firewall_to_break:
             self.grid.cells[pos[0] // TILE_SIZE - 1][pos[1] // TILE_SIZE - 1].value = None
@@ -343,6 +347,7 @@ class Scene(object):
             self.update_steps(1)
     
     def check_and_open_door(self, pos:tuple):
+        """Abre la puerta que coincide con la posición que se da."""
         for door in self.grid.doors:
             if pos[0] // TILE_SIZE - 1 == door.x and pos[1] // TILE_SIZE - 1 == door.y:
                 door.open()
@@ -351,11 +356,12 @@ class Scene(object):
     # endregion
 
     def move_virus(self):
+        """Mueve ambos virus al mismo tiempo."""
         self.move_wandering_virus_lin()
         self.move_wandering_virus_sin()
 
     def move_wandering_virus_lin(self):
-        """Controla el movimiento del virus que ataca al jugador."""
+        """Controla el movimiento del virus que se mueve de manera lineal."""
         for virus in self.grid.wandering_virus_lin.values():
             if virus[0] != None:
                 if virus[0] != 0:
@@ -364,6 +370,7 @@ class Scene(object):
                     virus[0] = 7
 
     def move_wandering_virus_sin(self):
+        """Controla el movimiento del virus que se mueve de manera sinusoidal."""
         y_delta = 0
         for virus in self.grid.wandering_virus_sin.values():
             if virus[0] != None:
@@ -381,6 +388,7 @@ class Scene(object):
                 virus[1] += y_delta
 
     def reset_virus_pos(self, mouse_pos: tuple):
+        """Vuelve los virus a sus lugares originales."""
         all_moving_virus = {}
         all_moving_virus.update(self.grid.wandering_virus_lin)
         all_moving_virus.update(self.grid.wandering_virus_sin)
