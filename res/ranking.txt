@@ -1,1 +1,0 @@
-PABLITO CLAVO UN CLAVITO QUE CLAVITO CLAVO PABLITO | n1: 13 steps, 5 seconds | n2: 20 steps, 5 seconds | n3: 24 steps, 7 seconds | n4: 25 steps, 6 seconds | n5: 30 steps, 15 seconds | n6: 25 steps, 17 seconds | n7: 22 steps, 9 seconds | n8: 31 steps, 21 seconds | n9: 31 steps, 24 seconds | n10: 16 steps, 30 seconds
