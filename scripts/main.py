@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.11.7
+Versión 2.11.8
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -45,13 +45,13 @@ class Game():
             self.pause,
             self.name_menu,
             self.start_menu,
-            self.options)
+            self.options,
+            self.settings)
 
         self.paused = False
         self.running = True
         self.in_rounds = False
 
-        self.username = ""
         self.data_recorded = False
 
         self.mouse_moved_amount = 0
@@ -73,9 +73,8 @@ class Game():
         # detecta los inputs del usuario
         for event in pygame.event.get():
             if self.scene.round == -2:
-                self.username = self.name_menu.handle_writing(event)
-                self.scene.username = self.username
-                if self.username:
+                self.settings.username = self.name_menu.handle_writing(event)
+                if self.settings.username:
                     self.scene.round += 1
 
             if self.scene.show_options:
@@ -174,7 +173,7 @@ class Game():
     def write_to_scoreboard(self):
         """Guarda la información del usuario en el ranking.txt."""
         pass
-        full_string = self.username
+        full_string = self.settings.username
         with open("res/ranking.txt", "a") as sb:
             for index in range(self.scene.grid.round_count):
                 full_string += f" | n{index + 1}: {self.scene.steps_used_per_round[index] + 1} steps, {trunc(self.scene.time_spent_per_round[index])} seconds"

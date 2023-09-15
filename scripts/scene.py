@@ -14,6 +14,7 @@ from grid import Grid
 from menus import MovementsMenu, NameMenu, OptionsMenu, PauseMenu, StartMenu
 from pygame import Surface
 from texturedata import TEXTURES
+from settings import GameSettings
 
 
 class Scene(object):
@@ -23,7 +24,8 @@ class Scene(object):
                  pause_menu: PauseMenu,
                  name_menu: NameMenu,
                  start_menu: StartMenu,
-                 options_menu: OptionsMenu):
+                 options_menu: OptionsMenu,
+                 settings: GameSettings):
 
         # define los tamaños de las fuentes para la gui
         pygame.font.init()
@@ -38,12 +40,11 @@ class Scene(object):
         self.movement_menu = movement_menu
         self.pause_menu = pause_menu
         self.options_menu = options_menu
+        self.settings = settings
 
         self.used_steps = 0
         self.steps_used_per_round = []
         self.time_spent_per_round = []
-
-        self.username = ""
 
         self.robots = [
             "UAIBOT",
@@ -297,7 +298,8 @@ class Scene(object):
             "Felicidades, has ganado", False, WHITE)
         congrats_rect = congrats_text.get_rect(
             centerx=SCREEN_WIDTH // 2, centery=70)
-        player_name_text = self.large_font.render(self.username, False, WHITE)
+        player_name_text = self.large_font.render(
+            self.settings.username, False, WHITE)
         player_name_rect = player_name_text.get_rect(
             centerx=SCREEN_WIDTH // 2, centery=player_name_text.get_rect().h + 80)
 
