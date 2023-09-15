@@ -4,17 +4,20 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.11.6
+Versión 2.11.7
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
+from math import trunc
+
 import pygame
+from audio import AudioHandler
 from constants import *
-from gui import MovementsMenu, Pause, NameMenu, StartMenu, Options
+from menus import MovementsMenu, NameMenu, OptionsMenu, PauseMenu, StartMenu
 from pygame import Surface
 from scene import Scene
+from settings import GameSettings
 from texturedata import load_textures
-from math import trunc
 
 
 class Game():
@@ -28,12 +31,21 @@ class Game():
         self.clock = pygame.time.Clock()  # creamos un reloj para los fps
         load_textures()
 
+        self.settings: GameSettings = GameSettings()
+        self.audio_handler: AudioHandler = AudioHandler(self.settings)
         self.start_menu: StartMenu = StartMenu()
         self.name_menu: NameMenu = NameMenu(self.screen)
-        self.options: Options = Options()
+        self.options: OptionsMenu = OptionsMenu(self.settings)
         self.mov_amount_ui: MovementsMenu = MovementsMenu()
-        self.pause: Pause = Pause()
-        self.scene: Scene = Scene(self.screen, self.mov_amount_ui, self.pause, self.name_menu, self.start_menu, self.options)
+        self.pause: PauseMenu = PauseMenu()
+        self.scene: Scene = Scene(
+            self.screen,
+            self.audio_handler,
+            self.mov_amount_ui,
+            self.pause,
+            self.name_menu,
+            self.start_menu,
+            self.options)
 
         self.paused = False
         self.running = True
@@ -64,8 +76,8 @@ class Game():
                 self.username = self.name_menu.handle_writing(event)
                 self.scene.username = self.username
                 if self.username:
-                    self.scene.round += 1  
-            
+                    self.scene.round += 1
+
             if self.scene.show_options:
                 self.options.handle_input(event)
 
@@ -101,11 +113,11 @@ class Game():
                         self.scene.change_robot()
                 elif event.type == pygame.MOUSEMOTION and not self.scene.dead:
                     self.mouse_moved_amount += 1
-                    if self.mouse_moved_amount >= MOUSE_MOV_REQ * game_vars.sensitivity_level:
+                    if self.mouse_moved_amount >= MOUSE_MOV_REQ * self.settings.sensitivity_level:
                         self.scene.move_virus()
                         self.mouse_moved_amount = 0
                 elif event.type == pygame.MOUSEBUTTONUP and not self.scene.dead:
-                    self.scene.audio_player.play_sound("res/sounds/click.wav")
+                    self.audio_handler.play_sound("res/sounds/click.wav")
                     self.scene.reset_virus_pos(event.pos)
                     self.scene.check_and_break_firewall(event.pos)
                     self.scene.check_and_open_door(event.pos)
@@ -116,14 +128,16 @@ class Game():
                 elif event.key == pygame.K_r and not self.name_menu.active and not self.scene.round == -3:
                     self.data_recorded = False
                     self.scene.reset_game()
-                elif self.scene.round == 0 and self.scene.difficulty_set:  # toma cualquier input de tecla durante la intro
+                # toma cualquier input de tecla durante la intro
+                elif self.scene.round == 0 and self.scene.difficulty_set:
                     self.scene.continue_intro()
                 elif self.scene.round == -3:
                     self.scene.round += 1
 
             elif event.type == pygame.MOUSEBUTTONUP:
 
-                if self.paused and not self.scene.show_rules and not self.scene.show_options:  # toma la interacción con los botones de la pausa
+                # toma la interacción con los botones de la pausa
+                if self.paused and not self.scene.show_rules and not self.scene.show_options:
                     result = self.pause.define_button_pressed()
                     if result == 1:
                         self.paused = False
@@ -167,10 +181,9 @@ class Game():
             full_string += "\n"
             sb.write(full_string)
 
-
     def finish(self):
         """Finaliza el programa."""
-        self.scene.audio_player.stop_music()
+        self.audio_handler.stop_music()
         pygame.quit()
         sys.exit()
 

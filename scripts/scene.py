@@ -2,21 +2,28 @@
 
 Se encarga de los eventos, renderizado y lógica general del juego."""
 
-import random as rng
+
+from math import sin, trunc
+from random import randint
+from time import time
+
 import pygame
-import time as t
-import math as m
 from audio import AudioHandler
 from constants import *
 from grid import Grid
-from gui import MovementsMenu, Pause, NameMenu, StartMenu, Options
+from menus import MovementsMenu, NameMenu, OptionsMenu, PauseMenu, StartMenu
 from pygame import Surface
 from texturedata import TEXTURES
 
 
 class Scene(object):
 
-    def __init__(self, screen: Surface, mov_m: MovementsMenu, pause: Pause, name_m: NameMenu, start_m: StartMenu, options_m: Options):
+    def __init__(self, screen: Surface, audio_handler: AudioHandler,
+                 movement_menu: MovementsMenu,
+                 pause_menu: PauseMenu,
+                 name_menu: NameMenu,
+                 start_menu: StartMenu,
+                 options_menu: OptionsMenu):
 
         # define los tamaños de las fuentes para la gui
         pygame.font.init()
@@ -24,12 +31,14 @@ class Scene(object):
         self.large_font = pygame.font.Font("res/font/PixelOperator.ttf", 48)
 
         self.screen = screen
-        self.start_menu = start_m
-        self.name_menu = name_m
-        self.mov_amount_ui = mov_m
-        self.pause = pause
-        self.options = options_m
-        self.audio_player: AudioHandler = AudioHandler()
+        self.audio_handler = audio_handler
+
+        self.start_menu = start_menu
+        self.name_menu = name_menu
+        self.movement_menu = movement_menu
+        self.pause_menu = pause_menu
+        self.options_menu = options_menu
+
         self.used_steps = 0
         self.steps_used_per_round = []
         self.time_spent_per_round = []
@@ -57,7 +66,7 @@ class Scene(object):
         self.dead = False
         self.intro_frame_num = 2
         # define la textura de los virus al azar
-        self.virus_index = rng.randint(1, 4)
+        self.virus_index = randint(1, 4)
         self.show_rules = False
         self.show_options = False
         self.won_game = False
@@ -83,10 +92,10 @@ class Scene(object):
     def run_timer(self, paused):
         """Maneja el funcionamiento del timer del juego"""
         if self.start_time == 0:
-            self.start_time = t.time()
+            self.start_time = time()
 
-        delta_time = t.time() - self.current_time
-        self.current_time = t.time()
+        delta_time = time() - self.current_time
+        self.current_time = time()
         if paused:
             self.start_time += delta_time
         if not self.dead and not paused:
@@ -106,7 +115,7 @@ class Scene(object):
         time_left = (self.time_limit - self.elapsed_time) / self.time_limit
         fg_rect.w *= time_left
 
-        time_percentage = m.trunc(time_left * 100)
+        time_percentage = trunc(time_left * 100)
         percentage_text = self.small_font.render(
             f"{time_percentage}%", False, WHITE)
         percentage_rect = percentage_text.get_rect()
@@ -215,7 +224,7 @@ class Scene(object):
                 remaining_steps_text, (677, 384, TEXT_BLOCK_WIDTH, TEXT_BLOCK_HEIGHT))
 
             timer_text = self.small_font.render(
-                f"Tiempo restante: {m.trunc(self.timer)}", False, WHITE
+                f"Tiempo restante: {trunc(self.timer)}", False, WHITE
             )
             self.screen.blit(
                 timer_text, (0, 0, TEXT_BLOCK_WIDTH, TEXT_BLOCK_HEIGHT))
@@ -224,19 +233,19 @@ class Scene(object):
 
         if self.round == -3:  # start menu
             self.start_menu.draw(screen)
-            self.audio_player.play_music("res/sounds/menu-theme.mp3")
+            self.audio_handler.play_music("res/sounds/menu-theme.mp3")
 
         if self.round == -2:  # menú de definición del nombre del jugador
             self.name_menu.draw()
 
         if self.round == -1:  # menú de elección de movimientos
-            self.mov_amount_ui.draw(self.screen)
+            self.movement_menu.draw(self.screen)
 
         # Dibuja la pausa y controla el volumen de la musica
         if paused:
             pygame.mouse.set_visible(True)
             if not self.show_rules and not self.show_options:
-                self.pause.draw(self.screen)
+                self.pause_menu.draw(self.screen)
 
         if self.round < 1 and self.difficulty_set:
             self.draw_intro()
@@ -246,12 +255,12 @@ class Scene(object):
         if self.show_rules:
             self.screen.blit(
                 TEXTURES["game_rules"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
-            self.audio_player.lower_music_vol()
+            self.audio_handler.lower_music_vol()
         else:
-            self.audio_player.reset_music_vol()
+            self.audio_handler.reset_music_vol()
 
         if self.show_options:
-            self.options.draw(self.screen)
+            self.options_menu.draw(self.screen)
 
     def draw_intro(self):
         """Renderiza la introducción en pantalla."""
@@ -272,8 +281,8 @@ class Scene(object):
             self.intro_frame_num += 1
         else:
             self.intro_finished = True
-            self.audio_player.stop_music()
-            self.audio_player.play_music("res/sounds/main-theme.mp3")
+            self.audio_handler.stop_music()
+            self.audio_handler.play_music("res/sounds/main-theme.mp3")
 
     def draw_win(self):
         pygame.mouse.set_visible(True)
@@ -282,12 +291,15 @@ class Scene(object):
             TEXTURES["win"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
         self.screen.blit(
             TEXTURES["r_return"], (SCREEN_WIDTH // 2 - 590 // 2, SCREEN_HEIGHT //
-                                   2 + 300 - m.sin(pygame.time.get_ticks() / 100) * 10)
+                                   2 + 300 - sin(pygame.time.get_ticks() / 100) * 10)
         )
-        congrats_text = self.large_font.render("Felicidades, has ganado", False, WHITE)
-        congrats_rect = congrats_text.get_rect(centerx = SCREEN_WIDTH // 2, centery = 70)
+        congrats_text = self.large_font.render(
+            "Felicidades, has ganado", False, WHITE)
+        congrats_rect = congrats_text.get_rect(
+            centerx=SCREEN_WIDTH // 2, centery=70)
         player_name_text = self.large_font.render(self.username, False, WHITE)
-        player_name_rect = player_name_text.get_rect(centerx = SCREEN_WIDTH // 2, centery = player_name_text.get_rect().h + 80)
+        player_name_rect = player_name_text.get_rect(
+            centerx=SCREEN_WIDTH // 2, centery=player_name_text.get_rect().h + 80)
 
         self.screen.blit(congrats_text, congrats_rect)
         self.screen.blit(player_name_text, player_name_rect)
@@ -312,7 +324,7 @@ class Scene(object):
                 if self.grid.cells[x][y].value == "virus":
                     done_virus += 1
                     self.grid.cells[x][y].value = "dead_virus"
-                    self.audio_player.play_sound(
+                    self.audio_handler.play_sound(
                         "res/sounds/kill-virus.wav")
 
             if done_virus == protected_zones_count and self.round <= self.grid.round_count:
@@ -324,7 +336,7 @@ class Scene(object):
                 self.round += 1
 
                 if self.round <= self.grid.round_count:
-                    self.virus_index = rng.randint(1, 4)
+                    self.virus_index = randint(1, 4)
                     self.grid.load_round(self.difficulty, self.round)
                     self.start_time = 0
                     self.current_time = 0
@@ -344,23 +356,23 @@ class Scene(object):
             if virus[0] != None:
                 if self.grid.cells[virus[0]][virus[1]].value == "player" and not self.dead:
                     self.dead = True
-                    self.audio_player.interrupt_music(
+                    self.audio_handler.interrupt_music(
                         "res/sounds/main-theme.mp3", "res/sounds/lost.wav")
 
     def check_and_break_firewall(self, pos: tuple):
         """Rompe la pared que coincide con la posición que se da."""
         firewall_to_break = self.grid.is_there_firewall(pos)
         if firewall_to_break:
-            self.grid.cells[pos[0] // TILE_SIZE - 1][pos[1] // TILE_SIZE - 1].value = None
+            self.grid.cells[pos[0] // TILE_SIZE -
+                            1][pos[1] // TILE_SIZE - 1].value = None
             self.grid.firewall_rects.pop(firewall_to_break)
             self.update_steps(1)
-    
-    def check_and_open_door(self, pos:tuple):
+
+    def check_and_open_door(self, pos: tuple):
         """Abre la puerta que coincide con la posición que se da."""
         for door in self.grid.doors:
             if pos[0] // TILE_SIZE - 1 == door.x and pos[1] // TILE_SIZE - 1 == door.y:
                 door.open()
-
 
     # endregion
 
@@ -450,32 +462,31 @@ class Scene(object):
             else:
                 farther_cell = next_cell
 
-            
             next_cell_door = self.grid.is_there_door(next_cell.xy)
             next_cell_empty = True if next_cell.value is None else False
             if next_cell_door:
-               if next_cell_door.value is not None:
-                   next_cell_empty = False
+                if next_cell_door.value is not None:
+                    next_cell_empty = False
 
             farther_cell_door = self.grid.is_there_door(farther_cell.xy)
             farther_cell_empty = True if farther_cell.value is None else False
             if farther_cell_door:
-               if farther_cell_door.value is not None:
-                   farther_cell_empty = False
+                if farther_cell_door.value is not None:
+                    farther_cell_empty = False
 
             if self.robots[0] == "UAIBOT":
 
                 if next_cell_empty:
                     self.grid.move_element(
                         self.player_cell, next_cell.xy)
-                    self.audio_player.play_sound("res/sounds/move.wav")
+                    self.audio_handler.play_sound("res/sounds/move.wav")
                     moved = True
 
                 if next_cell.value == "virus" and farther_cell_empty:
                     self.grid.move_element(next_cell, farther_cell.xy)
                     self.grid.move_element(
                         self.player_cell, next_cell.xy)
-                    self.audio_player.play_sound("res/sounds/move.wav")
+                    self.audio_handler.play_sound("res/sounds/move.wav")
                     moved = True
 
             if self.robots[0] == "UAIBOTA":  # UAIBOTA
@@ -483,7 +494,7 @@ class Scene(object):
                 if next_cell_empty:
                     self.grid.move_element(
                         self.player_cell, next_cell.xy)
-                    self.audio_player.play_sound("res/sounds/move.wav")
+                    self.audio_handler.play_sound("res/sounds/move.wav")
                     moved = True
                     if prev_cell.value == "virus":
                         self.grid.move_element(
@@ -494,12 +505,12 @@ class Scene(object):
                     self.grid.move_element(
                         self.player_cell, next_cell.xy)
                     moved = True
-                    self.audio_player.play_sound("res/sounds/move.wav")
+                    self.audio_handler.play_sound("res/sounds/move.wav")
 
                 if next_cell.value == "virus" and farther_cell_empty:
                     self.grid.move_element(
                         self.player_cell, farther_cell.xy)
-                    self.audio_player.play_sound("res/sounds/jump.wav")
+                    self.audio_handler.play_sound("res/sounds/jump.wav")
 
                     # como UAIBOTINO se mueve dos celdas en vez de una en este caso, la celda próxima a la que se
                     # actualizará su posición corresponde a la celda siguiente a esta
@@ -540,7 +551,7 @@ class Scene(object):
         self.start_time = 0
         self.current_time = 0
         self.elapsed_time = 0
-        self.audio_player.stop_music()
+        self.audio_handler.stop_music()
 
     def update_steps(self, steps_delta: int):
         """Maneja el sistema de turnos, haciendo el avance y el reseteo en caso de que se terminen los movimientos habilitados."""
@@ -549,7 +560,7 @@ class Scene(object):
             door.pass_turns()
         if self.used_steps >= self.grid.round_steps:
             self.restart()
-            self.audio_player.interrupt_music(
+            self.audio_handler.interrupt_music(
                 "res/sounds/main-theme.mp3",
                 "res/sounds/lost.wav")
 
