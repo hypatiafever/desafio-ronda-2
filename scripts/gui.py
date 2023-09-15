@@ -35,7 +35,7 @@ class NameMenu(object):
         self.color_passive = (172, 89, 106)
         self.input_color = self.color_passive
         self.input_text_color = WHITE
-        self.active = False
+        self.active = True
 
     def draw(self):
         """Dibuja los elementos del menú."""

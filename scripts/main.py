@@ -55,7 +55,6 @@ class Game():
         """Código que se ejecuta en cada frame."""
 
         # region --- Events ---
-        
 
         self.in_rounds = self.scene.round > 0 and self.scene.round <= self.scene.grid.round_count
 
