@@ -42,7 +42,6 @@ _TEXTURE_DATA = {
     "intro_frame3": {"file_path": "res/intro/intro_frame3.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
     "intro_frame4": {"file_path": "res/intro/intro_frame4.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
     "intro_frame5": {"file_path": "res/intro/intro_frame5.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
-    "intro_frame6": {"file_path": "res/intro/intro_frame6.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
     "game_rules": {"file_path": "res/rules/rules.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
 
     # rules

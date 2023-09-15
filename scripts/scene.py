@@ -53,7 +53,7 @@ class Scene(object):
 
         self.player_cell = None
         self.dead = False
-        self.intro_frame_num = 1
+        self.intro_frame_num = 2
         # define la textura de los virus al azar
         self.virus_index = rng.randint(1, 4)
         self.show_rules = False
@@ -253,12 +253,12 @@ class Scene(object):
 
     def draw_intro(self):
         """Renderiza la introducción en pantalla."""
-        if self.intro_frame_num < 7:
+        if self.intro_frame_num < 6:
             self.screen.blit(
                 TEXTURES[f"intro_frame{self.intro_frame_num}"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
             self.screen.blit(
                 TEXTURES["press_any_black"], (SCREEN_WIDTH - 450, SCREEN_HEIGHT - 45, 450, 50))
-        elif self.intro_frame_num == 7:
+        elif self.intro_frame_num == 6:
             self.screen.blit(
                 TEXTURES["game_rules"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
             self.screen.blit(
@@ -266,7 +266,7 @@ class Scene(object):
 
     def continue_intro(self):
         """Maneja el pasar de los frames de la intro."""
-        if self.intro_frame_num < 7:  # pasa al siguiente frame o termina la animaciòn
+        if self.intro_frame_num < 6:  # pasa al siguiente frame o termina la animaciòn
             self.intro_frame_num += 1
         else:
             self.intro_finished = True
