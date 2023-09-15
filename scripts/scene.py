@@ -95,6 +95,8 @@ class Scene(object):
         if self.start_time == 0:
             self.start_time = time()
 
+        # delta_time nos permite que tanto el tiempo de comienzo y el tiempo
+        # actual avancen a la vez para simular una pausa
         delta_time = time() - self.current_time
         self.current_time = time()
         if paused:
