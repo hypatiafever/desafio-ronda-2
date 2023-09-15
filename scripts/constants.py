@@ -23,7 +23,3 @@ MOUSE_MOV_REQ = 10
 
 # colores
 WHITE = (255, 255, 255)
-
-
-# determina el tamaño de la grid en relación a la altura del display
-ASPECT_RATIO = (SCREEN_HEIGHT-2*TILE_SIZE)//TILE_SIZE

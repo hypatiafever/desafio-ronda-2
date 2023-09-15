@@ -39,7 +39,10 @@ class AudioHandler():
     def lower_music_vol(self):
         """Baja el volúmen, pensado para el menú de pausa."""
         mixer.music.set_volume(0.3 * (game_vars.volume_level / 10))
+        mixer.Channel(1).set_volume(0.1 * (game_vars.volume_level / 10))
 
     def reset_music_vol(self):
         """Reestablece el volúmen original."""
         mixer.music.set_volume(1 * (game_vars.volume_level / 10))
+        mixer.Channel(1).set_volume(0.3 * (game_vars.volume_level / 10))
+

@@ -8,7 +8,7 @@ from texturedata import TEXTURES
 
 STEPS_PER_ROUND = ((25, 40, 45, 45, 55, 50, 35, 60, 65, 30),  # Fácil 
                    (18, 30, 35, 35, 45, 35, 25, 45, 45, 20),  # Normal
-                   (11, 20, 24, 21, 29, 25, 18, 31, 34, 16))  # Difícil
+                   (11, 20, 24, 21, 29, 25, 18, 31, 31, 16))  # Difícil
 
 
 class Cell():

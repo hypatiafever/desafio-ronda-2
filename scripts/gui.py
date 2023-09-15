@@ -181,13 +181,17 @@ class Options(object):
     def draw(self, screen: pygame.Surface):
         """Dibuja los elementos del menú."""
 
+        # Botones
         screen.blit(TEXTURES[self.vol_up_skin], self.vol_up_button_rect)
         screen.blit(TEXTURES[self.vol_down_skin], self.vol_down_button_rect)
         screen.blit(TEXTURES[self.sens_up_skin], self.sens_up_button_rect)
         screen.blit(TEXTURES[self.sens_down_skin], self.sens_down_button_rect)
+
+        # Textos
         screen.blit(TEXTURES["volume_text"], (SCREEN_WIDTH // 4 - 32, 50))
         screen.blit(TEXTURES["hardness_text"], (SCREEN_WIDTH // 4 * 3 - 75, 50))
 
+        # Barras indicadoras
         volume_bar = self.update_volume_bar()
         pygame.draw.rect(screen, volume_bar[1], volume_bar[0])
         pygame.draw.rect(screen, volume_bar[3], volume_bar[2])
@@ -221,15 +225,20 @@ class Options(object):
         return back_rect, (172, 89, 106), front_rect, (102, 41, 53), percentage_text, percentage_rect
 
     def update_sens_bar(self):
+        """Actualiza el aspecto de la barra de sensibilidad y devuelve los elementos para dibujarla."""
 
         sens_full_w = 200
+        # posicionamiento de las barras
         back_rect = pygame.Rect(
             SCREEN_WIDTH // 4 * 3 - 148, SCREEN_HEIGHT // 2 - 30, 316, 50)
         front_rect = pygame.Rect(SCREEN_WIDTH // 4 * 3 - sens_full_w //
                                  2 - 40, SCREEN_HEIGHT // 2 - 22, sens_full_w * 1.5, 34)
 
+        # escala el ancho dependiendo del nivel de sensibilidad
         front_rect.w *= game_vars.sensitivity_level / 10
         sens_percentage = m.trunc(game_vars.sensitivity_level * 10)
+
+        # genera el texto que indica el porcentaje
         percentage_text = self.small_font.render(
             f"{sens_percentage}%", False, WHITE)
         percentage_rect = percentage_text.get_rect()
@@ -238,7 +247,9 @@ class Options(object):
         return back_rect, (172, 89, 106), front_rect, (102, 41, 53), percentage_text, percentage_rect
 
     def handle_input(self, event):
+        """Maneja la interacción del mouse y las opciones."""
 
+        # Aumentar y disminuir los valores
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.vol_up_button_rect.collidepoint(event.pos) and game_vars.volume_level < 10:
                 self.vol_up_skin = "but_up_pressed"

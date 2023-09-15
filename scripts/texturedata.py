@@ -10,11 +10,6 @@ _TEXTURE_DATA = {
     "UAIBOTA": {"file_path": "res/robots/UAIBOTA.png", "size": (TILE_SIZE, TILE_SIZE)},
     "UAIBOTINO": {"file_path": "res/robots/UAIBOTINO.png", "size": (TILE_SIZE, TILE_SIZE)},
 
-    # robots mario (TOP SECRET)
-    "UAIBOT_MARIO": {"file_path": "res/robots/UAIBOT_MARIO.png", "size": (TILE_SIZE, TILE_SIZE)},
-    "UAIBOTA_MARIO": {"file_path": "res/robots/UAIBOTA.png", "size": (TILE_SIZE, TILE_SIZE)},
-    "UAIBOTINO_MARIO": {"file_path": "res/robots/UAIBOTINO.png", "size": (TILE_SIZE, TILE_SIZE)},
-
     # escenario
     "background": {"file_path": "res/scenery/fondo-ciberespacio.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
     "wall": {"file_path": "res/scenery/pared.png", "size": (TILE_SIZE, TILE_SIZE)},
