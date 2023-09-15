@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.11.4
+Versión 2.11.5
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -106,6 +106,7 @@ class Game():
                         self.scene.move_virus()
                         self.mouse_moved_amount = 0
                 elif event.type == pygame.MOUSEBUTTONUP and not self.scene.dead:
+                    self.scene.audio_player.play_sound("res/sounds/click.wav")
                     self.scene.reset_virus_pos(event.pos)
                     self.scene.check_and_break_firewall(event.pos)
                     self.scene.check_and_open_door(event.pos)
