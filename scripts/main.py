@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.11.10
+Versión 2.12.0
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -18,6 +18,11 @@ from pygame import Surface
 from scene import Scene
 from settings import GameSettings
 from texturedata import load_textures
+
+SCENE_START_MENU = -3
+SCENE_INPUT_NAME = -2
+SCENE_INPUT_DIFFICULTY = -1
+SCENE_GAME_INTRO = 0
 
 
 class Game():
@@ -68,11 +73,12 @@ class Game():
 
         # region --- Events ---
 
-        self.in_rounds = self.scene.round > 0 and self.scene.round <= self.scene.grid.round_count
+        self.in_rounds = self.scene.round > SCENE_GAME_INTRO and self.scene.round <= self.scene.grid.round_count
 
         # detecta los inputs del usuario
         for event in pygame.event.get():
-            if self.scene.round == -2:
+
+            if self.scene.round == SCENE_INPUT_NAME:
                 self.settings.username = self.name_menu.handle_writing(event)
                 if self.settings.username:
                     self.scene.round += 1
@@ -124,13 +130,13 @@ class Game():
             elif event.type == pygame.KEYDOWN and not self.in_rounds:  # maneja el input fuera de las rondas
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
-                elif event.key == pygame.K_r and not self.name_menu.active and not self.scene.round == -3:
+                elif event.key == pygame.K_r and not self.name_menu.active and not self.scene.round == SCENE_START_MENU:
                     self.data_recorded = False
                     self.scene.reset_game()
                 # toma cualquier input de tecla durante la intro
-                elif self.scene.round == 0 and self.scene.difficulty_set:
+                elif self.scene.round == SCENE_GAME_INTRO and self.scene.difficulty_set:
                     self.scene.continue_intro()
-                elif self.scene.round == -3:
+                elif self.scene.round == SCENE_START_MENU:
                     self.scene.round += 1
 
             elif event.type == pygame.MOUSEBUTTONUP:
@@ -147,17 +153,19 @@ class Game():
                     elif result == 4:
                         self.scene.show_options = True
 
-                elif self.scene.round == -1:  # toma la interacción con los botones de dificultad
+                elif self.scene.round == SCENE_INPUT_DIFFICULTY:
+                    # toma la interacción con los botones de dificultad
                     result = self.mov_amount_ui.define_button_pressed()
                     if result:
                         self.scene.difficulty = result - 1
                         self.scene.difficulty_set = True
                         self.scene.round += 1
 
-                elif self.scene.round == -3:
+                elif self.scene.round == SCENE_START_MENU:
                     self.scene.round += 1
 
-                elif self.scene.round == 0 and self.scene.difficulty_set:  # toma el paso de la intro
+                elif self.scene.round == SCENE_GAME_INTRO and self.scene.difficulty_set:
+                    # toma el paso de la intro
                     self.scene.continue_intro()
         # endregion
 
