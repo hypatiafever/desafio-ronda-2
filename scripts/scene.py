@@ -34,6 +34,8 @@ class Scene(object):
         self.steps_used_per_round = []
         self.time_spent_per_round = []
 
+        self.username = ""
+
         self.robots = [
             "UAIBOT",
             "UAIBOTA",
@@ -280,8 +282,15 @@ class Scene(object):
             TEXTURES["win"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
         self.screen.blit(
             TEXTURES["r_return"], (SCREEN_WIDTH // 2 - 590 // 2, SCREEN_HEIGHT //
-                                   2 + 200 - m.sin(pygame.time.get_ticks() / 100) * 10)
+                                   2 + 300 - m.sin(pygame.time.get_ticks() / 100) * 10)
         )
+        congrats_text = self.large_font.render("Felicidades, has ganado", False, WHITE)
+        congrats_rect = congrats_text.get_rect(centerx = SCREEN_WIDTH // 2, centery = 70)
+        player_name_text = self.large_font.render(self.username, False, WHITE)
+        player_name_rect = player_name_text.get_rect(centerx = SCREEN_WIDTH // 2, centery = player_name_text.get_rect().h + 80)
+
+        self.screen.blit(congrats_text, congrats_rect)
+        self.screen.blit(player_name_text, player_name_rect)
 
     # endregion
 

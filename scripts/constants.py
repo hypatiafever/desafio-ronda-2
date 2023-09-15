@@ -23,3 +23,4 @@ MOUSE_MOV_REQ = 10
 
 # colores
 WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
