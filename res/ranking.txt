@@ -1,1 +1,0 @@
-poponoto | n1: 11 steps, 5 seconds | n2: 20 steps, 7 seconds | n3: 26 steps, 13 seconds | n4: 21 steps, 10 seconds | n5: 32 steps, 21 seconds | n6: 27 steps, 13 seconds | n7: 20 steps, 10 seconds | n8: 30 steps, 26 seconds | n9: 31 steps, 15 seconds | n10: 18 steps, 29 seconds
