@@ -52,6 +52,8 @@ _TEXTURE_DATA = {
     "press_any_white": {"file_path": "res/rules/pressany_white.png", "size": (450, 50)},
     "wandering_virus_rules": {"file_path": "res/rules/wandering_virus_rules.png", "size": (600, 90)},
     "r_return": {"file_path": "res/rules/r_to_go_back.png", "size": (590, 35)},
+    "click_virus": {"file_path": "res/rules/click_virus_rules.png", "size": (527, 97)},
+    "pause_rules": {"file_path": "res/rules/pause_rules.png", "size": (452, 31)},
 
     # menu
     "easy_button": {"file_path": "res/menu/button_easy.png", "size": (TILE_SIZE*4, TILE_SIZE*2)},
@@ -62,7 +64,7 @@ _TEXTURE_DATA = {
     "text_background_3": {"file_path": "res/menu/text_background_3.png", "size": (670, 60)},
     "start_menu_background": {"file_path": "res/menu/start_menu_bg.png", "size": (SCREEN_WIDTH, SCREEN_HEIGHT)},
     "insert_name": {"file_path": "res/menu/insert_name.png", "size": (252, 36)},
-    "mov_choose": {"file_path": "res/menu/movement_choose.png", "size": (420, 36)},
+    "mov_choose": {"file_path": "res/menu/movement_choose.png", "size": (942, 108)},
 
     # pause
     "exit_button": {"file_path": "res/pause/button_exit.png", "size": (TILE_SIZE*4, TILE_SIZE*2)},

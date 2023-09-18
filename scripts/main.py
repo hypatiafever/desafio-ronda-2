@@ -4,7 +4,7 @@ RONDA 2
 
 Crea el juego (mainloop) e inicializa el módulo pygame.
 
-Versión 2.12.1
+Versión 2.12.2
 Estándar de estilo utilizado: PEP8 (https://peps.python.org/pep-0008/)."""
 
 import sys
@@ -34,7 +34,8 @@ class Game():
         self.screen: Surface = pygame.display.set_mode(
             (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()  # creamos un reloj para los fps
-        load_textures()
+        load_textures()        
+        pygame.display.set_caption("UAIBOT WORLD 2 - OFIRCA 2023 - Ronda 2")
 
         self.settings: GameSettings = GameSettings()
         self.audio_handler: AudioHandler = AudioHandler(self.settings)

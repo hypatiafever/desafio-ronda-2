@@ -184,12 +184,19 @@ class Scene(object):
             if self.round == 1:
                 self.screen.blit(
                     TEXTURES["sin_virus_rules"], (672, 450))
+            if self.round == 2:
+                self.screen.blit(
+                    TEXTURES["click_virus"], (672, 450))
             if self.round == 3:
                 self.screen.blit(
                     TEXTURES["firewall_rules"], (672, 450))
             if self.round == 6:
                 self.screen.blit(
                     TEXTURES["door_rules"], (672, 450))
+                
+            if in_rounds:
+                self.screen.blit(
+                    TEXTURES["pause_rules"], (672, TILE_SIZE))
 
             grid_end_area = (GRID_SIZE * TILE_SIZE + TILE_SIZE,
                              GRID_SIZE * TILE_SIZE + TILE_SIZE)
@@ -249,6 +256,11 @@ class Scene(object):
             pygame.mouse.set_visible(True)
             if not self.show_rules and not self.show_options:
                 self.pause_menu.draw(self.screen)
+        
+        if paused or self.show_options or self.show_rules:
+            self.audio_handler.lower_music_vol()
+        else:
+            self.audio_handler.reset_music_vol()
 
         if self.round < 1 and self.difficulty_set:
             self.draw_intro()
@@ -258,9 +270,6 @@ class Scene(object):
         if self.show_rules:
             self.screen.blit(
                 TEXTURES["game_rules"], (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
-            self.audio_handler.lower_music_vol()
-        else:
-            self.audio_handler.reset_music_vol()
 
         if self.show_options:
             self.options_menu.draw(self.screen)

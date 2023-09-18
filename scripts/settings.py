@@ -1,3 +1,4 @@
+"""Simplemente contiene variables globales que corresponden a ciertos ajustes. """
 
 class GameSettings():
     def __init__(self):

@@ -102,8 +102,9 @@ class MovementsMenu(object):
     def draw(self, screen: pygame.Surface):
         """Renderiza los elementos."""
 
-        screen.blit(TEXTURES["mov_choose"], (SCREEN_WIDTH //
-                    2 - 420 // 2, SCREEN_HEIGHT // 2 - 50))
+        screen.blit(TEXTURES["mov_choose"],
+                    (TEXTURES["mov_choose"].get_rect(centerx = screen.get_rect().centerx,
+                                                     centery = screen.get_rect().centery - 50)))
         screen.blit(TEXTURES["easy_button"], self.easy_button_rect)
         screen.blit(TEXTURES["normal_button"], self.normal_button_rect)
         screen.blit(TEXTURES["hard_button"], self.hard_button_rect)
